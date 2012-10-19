@@ -1,0 +1,59 @@
+@(artists:List[Artist],artistForm:Form[Application.ArtistName],usernameForm:Form[Application.LastFmName])
+
+@import helper._
+
+@main("Spotify Release Subscription") {
+	<div>
+		<h1>Your Subscriptions</h1>
+		<ul>
+			@for(artist <- artists) {
+				<li>
+					<img src="@{artist.id}.png" class="icon" alt="@{artist.name}-icon">
+					<a href="@artist.href">@artist.name</a>
+					@helper.form(routes.Application.unSubscribeArtist(artist.id) ){
+						<input type="submit" value="delete">
+					}
+				</li>
+			}
+		</ul>
+	</div>
+
+<div>
+	<h1>Subscribe</h1>
+	@form(action = routes.Application.subscribeArtist, args = 'id -> "artistForm") {
+        
+        @inputText(
+            field = artistForm("artistName"),
+            args = '_label -> "Artist Name", 'placeholder -> "artist name"
+        )
+  		<input type="submit">
+	}
+
+	@form(action = routes.Application.subscribeArtistFromLastFm, args = 'id -> "usernameForm") {
+        
+        @inputText(
+            field = usernameForm("username"),
+            args = '_label -> "User Name", 'placeholder -> "User Name"
+        )
+  		<input type="submit">
+	}
+</div>
+
+<div>
+	<h1>Last Month releases</h1>
+	<ul class="day">
+		<li>
+			<span>2O Mai 2012</span>
+			<ul class="release-per-day">
+				<li>
+					<div>
+						<img src="icon.png" class="icon" alt="go-hard-icon">
+						<a href="">brymo</a>
+						<a href="">Go Hard</a>
+					</div>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+}
