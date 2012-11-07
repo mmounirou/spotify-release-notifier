@@ -4,11 +4,9 @@ import java.sql.Connection;
 
 import com.mmounirou.spotify.datamodel.Albums;
 import com.mmounirou.spotify.datamodel.query.QAlbums;
-import com.mmounirou.spoty4j.core.Track;
 import com.mysema.query.sql.SQLQueryImpl;
 import com.mysema.query.sql.SQLiteTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
-
 
 public class AlbumDao
 {

@@ -9,7 +9,6 @@ import com.mysema.query.sql.SQLQueryImpl;
 import com.mysema.query.sql.SQLiteTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
-
 public class ArtistDao
 {
 
@@ -29,16 +28,21 @@ public class ArtistDao
 
 	public void addArtists(Iterable<Artists> artists)
 	{
+		long begin = System.currentTimeMillis();
+		QArtists tartists = QArtists.tArtists;
+		SQLInsertClause insertClause = new SQLInsertClause(m_connection, new SQLiteTemplates(), tartists);
 		for ( Artists artist : artists )
 		{
-			addArtist(artist);
+			//@formatter:off
+			insertClause.set(tartists.uri, artist.getUri())
+						.set(tartists.name, artist.getName())
+						.addBatch();
+			//@formatter:on
 		}
-	}
+		insertClause.execute();
 
-	private void addArtist(Artists artist)
-	{
-		SQLInsertClause insertClause = new SQLInsertClause(m_connection, new SQLiteTemplates(), QArtists.tArtists);
-		insertClause.populate(artist).execute();
+		long end = System.currentTimeMillis();
+		System.out.println("Insert artists" + (begin - end) / 1000);
 	}
 
 	public ImmutableList<Artists> all()
