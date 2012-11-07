@@ -6,19 +6,9 @@ package com.mmounirou.spotify.datamodel;
  */
 public class Albums {
 
-    private String albumartist;
-
     private String name;
 
     private String uri;
-
-    public String getAlbumartist() {
-        return albumartist;
-    }
-
-    public void setAlbumartist(String albumartist) {
-        this.albumartist = albumartist;
-    }
 
     public String getName() {
         return name;

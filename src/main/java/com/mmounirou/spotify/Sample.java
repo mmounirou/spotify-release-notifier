@@ -4,11 +4,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import org.sqlite.SQLiteJDBCLoader;
 
 import com.google.common.io.CharStreams;
 import com.mmounirou.spotify.generator.GeneratorUtils;
@@ -41,16 +38,7 @@ public class Sample
 			//statement.close();
 			
 			GeneratorUtils.generateTables(connection, "src/main/java", "");
-			
-			System.out.println(String.format("running in %s mode", SQLiteJDBCLoader.isNativeMode() ? "native" : "pure-java"));
 
-			ResultSet rs = statement.executeQuery("select * from tracks");
-			while ( rs.next() )
-			{
-				// read the result set
-				System.out.println("id = " + rs.getString("id"));
-				System.out.println("uri = " + rs.getInt("uri"));
-			}
 		}
 		catch ( SQLException e )
 		{

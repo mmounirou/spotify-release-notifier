@@ -1,9 +1,9 @@
 package com.mmounirou.spotify.datamodel.query;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
-
-
 import com.mmounirou.spotify.datamodel.Albums;
+
+
 import com.mysema.query.types.path.*;
 
 import com.mysema.query.types.PathMetadata;
@@ -17,11 +17,9 @@ import com.mysema.query.types.Path;
 @Generated("com.mysema.query.sql.codegen.MetaDataSerializer")
 public class QAlbums extends com.mysema.query.sql.RelationalPathBase<Albums> {
 
-    private static final long serialVersionUID = -1961403478;
+    private static final long serialVersionUID = -1072703765;
 
     public static final QAlbums tAlbums = new QAlbums("t_albums");
-
-    public final StringPath albumartist = createString("albumartist");
 
     public final StringPath name = createString("name");
 

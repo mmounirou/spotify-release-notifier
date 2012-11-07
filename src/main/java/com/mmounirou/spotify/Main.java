@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -16,15 +17,11 @@ import com.google.common.io.CharStreams;
 import com.mmounirou.spotify.dao.AlbumDao;
 import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
-import com.mmounirou.spotify.dao.TrackDao;
 import com.mmounirou.spotify.datamodel.Albums;
 import com.mmounirou.spotify.datamodel.Artists;
-import com.mmounirou.spotify.datamodel.Tracks;
 import com.mmounirou.spoty4j.api.Search;
 import com.mmounirou.spoty4j.core.Album;
 import com.mmounirou.spoty4j.core.Artist;
-import com.mmounirou.spoty4j.core.Track;
-
 
 public class Main
 {
@@ -49,95 +46,51 @@ public class Main
 			Albums albums = new Albums();
 			albums.setName(input.getName());
 			albums.setUri(input.getHref());
-			albums.setAlbumartist(input.getArtist().getHref());
 			return albums;
 		}
 	}
 
-
-	public static void main(String[] args) throws SQLException, IOException
+	private static void checkAlbumRelease(ArtistDao artistDao, AlbumDao albumDao)
 	{
-		Connection connection = DBUtils.initDataBase(true);
-		ArtistDao artistDao = new ArtistDao(connection);
-		AlbumDao albumDao = new AlbumDao(connection);
-		TrackDao trackDao = new TrackDao(connection);
-
-		if ( artistDao.getArtistCount() == 0 )
-		{
-			Set<Artist> allArtists = Sets.newHashSet();
-			for ( String strArtist : CharStreams.readLines(new InputStreamReader(Sample.class.getResourceAsStream("/artists.txt"))) )
-			{
-				allArtists.addAll(Search.searchArtist(strArtist));
-			}
-			artistDao.addArtists(FluentIterable.from(allArtists).transform(new ToDbArtist()));
-
-		}
-
 		ImmutableList<Artists> artists = artistDao.all();
+		Set<Album> allAlbums = Sets.newHashSet();
+
+		// Get all albums for this
 		for ( Artists artist : artists )
 		{
 			Artist spotifyArtist = new Artist(artist.getUri(), artist.getName()).fetch();
-			for ( Album spotifyAlbum : spotifyArtist.getAlbums() )
-			{
-				spotifyAlbum = spotifyAlbum.fetch();
-				spotifyAlbum.setArtist(spotifyArtist);
-
-				if ( albumDao.exist(spotifyAlbum.getHref()) )
-				{
-					for ( Track spotifyTrack : spotifyAlbum.getTracks() )
-					{
-						spotifyTrack = spotifyTrack.fetch();
-						spotifyTrack.setAlbum(spotifyAlbum);
-						spotifyTrack.setArtist(spotifyArtist);
-
-						if ( !trackDao.exist(spotifyTrack.getHref()) )
-						{
-							addTrack(trackDao, spotifyTrack, spotifyAlbum, spotifyArtist);
-							notifyNewTrack(artist, spotifyAlbum, spotifyTrack);
-						}
-					}
-				}
-				else
-				{
-					addAlbum(albumDao,trackDao, spotifyAlbum, spotifyArtist);
-					notifyNewAlbum(artist, spotifyAlbum);
-				}
-
-			}
+			allAlbums.addAll(spotifyArtist.getAlbums());
 		}
-	}
 
-	private static void addTrack(TrackDao trackDao, Track spotifyTrack,Album album,Artist artist)
-	{
-		trackDao.addTrack(toDbTrack(spotifyTrack, album, artist));
-	}
+		Collection<Album> insertedAlbums = albumDao.addAlbumsIfNotExists(allAlbums);
 
-	private static Tracks toDbTrack(Track input,Album album,Artist artist)
-	{
-		Tracks tracks = new Tracks();
-		tracks.setName(input.getName());
-		tracks.setUri(input.getHref());
-		tracks.setTrackalbum(album.getHref());
-		tracks.setTrackartist(artist.getHref());
-		return tracks;
-	}
-
-	private static void addAlbum(AlbumDao albumDao,TrackDao trackDao, Album spotifyAlbum,Artist artist)
-	{
-		albumDao.addAlbum(new ToDbAlbum().apply(spotifyAlbum));
-		for ( Track track : spotifyAlbum.getTracks() )
+		for ( Album album : insertedAlbums )
 		{
-			addTrack(trackDao, track, spotifyAlbum, artist);
+			notifyNewAlbum(album);
 		}
 	}
 
-	private static void notifyNewTrack(Artists artist, Album album, Track track)
+	private static void createArtists(ArtistDao artistDao) throws IOException
 	{
-		System.out.println(String.format("New Track : %s: %s : %s : %s",track.getHref(), artist.getName(), album.getName(), track.getName()));
+		Set<Artist> allArtists = Sets.newHashSet();
+		for ( String strArtist : CharStreams.readLines(new InputStreamReader(Sample.class.getResourceAsStream("/artists.txt"))) )
+		{
+			allArtists.addAll(Search.searchArtist(strArtist));
+		}
+		artistDao.addArtistIfNotExist(FluentIterable.from(allArtists).transform(new ToDbArtist()).toImmutableList());
 	}
 
-	private static void notifyNewAlbum(Artists artist, Album album)
+	private static void notifyNewAlbum(Album album)
 	{
-		System.out.println(String.format("New Album : %s : %s : %s",album.getHref(), artist.getName(), album.getName()));
+		System.out.println(String.format("New Album : %s : %s : %s", album.getHref(), album.getArtist().getName(), album.getName()));
+	}
+
+	public static void main(String[] args) throws SQLException, IOException
+	{
+		Connection connection = DBUtils.initDataBase(false);
+		ArtistDao artistDao = new ArtistDao(connection);
+		AlbumDao albumDao = new AlbumDao(connection);
+		createArtists(artistDao);
+		checkAlbumRelease(artistDao, albumDao);
 	}
 }
