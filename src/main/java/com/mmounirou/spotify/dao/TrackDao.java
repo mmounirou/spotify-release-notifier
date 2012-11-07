@@ -1,13 +1,13 @@
-package fr.cantor.test.dao;
+package com.mmounirou.spotify.dao;
 
 import java.sql.Connection;
 
+import com.mmounirou.spotify.datamodel.Tracks;
+import com.mmounirou.spotify.datamodel.query.QTracks;
 import com.mysema.query.sql.SQLQueryImpl;
 import com.mysema.query.sql.SQLiteTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
-import fr.cantor.test.datamodel.Tracks;
-import fr.cantor.test.datamodel.query.QTracks;
 
 public class TrackDao
 {

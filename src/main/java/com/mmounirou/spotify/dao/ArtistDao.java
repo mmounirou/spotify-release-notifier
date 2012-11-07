@@ -1,14 +1,14 @@
-package fr.cantor.test.dao;
+package com.mmounirou.spotify.dao;
 
 import java.sql.Connection;
 
 import com.google.common.collect.ImmutableList;
+import com.mmounirou.spotify.datamodel.Artists;
+import com.mmounirou.spotify.datamodel.query.QArtists;
 import com.mysema.query.sql.SQLQueryImpl;
 import com.mysema.query.sql.SQLiteTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
-import fr.cantor.test.datamodel.Artists;
-import fr.cantor.test.datamodel.query.QArtists;
 
 public class ArtistDao
 {

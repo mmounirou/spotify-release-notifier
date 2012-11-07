@@ -1,4 +1,4 @@
-package fr.cantor.test.dao;
+package com.mmounirou.spotify.dao;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import com.google.common.io.CharStreams;
+import com.mmounirou.spotify.Sample;
 
-import fr.cantor.test.Sample;
 
 public class DBUtils
 {

@@ -1,4 +1,4 @@
-package fr.cantor.test.generator;
+package com.mmounirou.spotify.generator;
 
 import java.io.File;
 import java.sql.Connection;

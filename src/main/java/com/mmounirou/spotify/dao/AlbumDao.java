@@ -1,14 +1,14 @@
-package fr.cantor.test.dao;
+package com.mmounirou.spotify.dao;
 
 import java.sql.Connection;
 
+import com.mmounirou.spotify.datamodel.Albums;
+import com.mmounirou.spotify.datamodel.query.QAlbums;
 import com.mmounirou.spoty4j.core.Track;
 import com.mysema.query.sql.SQLQueryImpl;
 import com.mysema.query.sql.SQLiteTemplates;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
-import fr.cantor.test.datamodel.Albums;
-import fr.cantor.test.datamodel.query.QAlbums;
 
 public class AlbumDao
 {

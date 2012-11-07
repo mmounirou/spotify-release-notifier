@@ -1,4 +1,4 @@
-package fr.cantor.test;
+package com.mmounirou.spotify;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,18 +13,18 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import com.google.common.io.CharStreams;
+import com.mmounirou.spotify.dao.AlbumDao;
+import com.mmounirou.spotify.dao.ArtistDao;
+import com.mmounirou.spotify.dao.DBUtils;
+import com.mmounirou.spotify.dao.TrackDao;
+import com.mmounirou.spotify.datamodel.Albums;
+import com.mmounirou.spotify.datamodel.Artists;
+import com.mmounirou.spotify.datamodel.Tracks;
 import com.mmounirou.spoty4j.api.Search;
 import com.mmounirou.spoty4j.core.Album;
 import com.mmounirou.spoty4j.core.Artist;
 import com.mmounirou.spoty4j.core.Track;
 
-import fr.cantor.test.dao.AlbumDao;
-import fr.cantor.test.dao.ArtistDao;
-import fr.cantor.test.dao.DBUtils;
-import fr.cantor.test.dao.TrackDao;
-import fr.cantor.test.datamodel.Albums;
-import fr.cantor.test.datamodel.Artists;
-import fr.cantor.test.datamodel.Tracks;
 
 public class Main
 {

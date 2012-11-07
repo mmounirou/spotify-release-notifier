@@ -1,9 +1,9 @@
-package fr.cantor.test.datamodel.query;
+package com.mmounirou.spotify.datamodel.query;
 
 import static com.mysema.query.types.PathMetadataFactory.*;
-import fr.cantor.test.datamodel.Albums;
 
 
+import com.mmounirou.spotify.datamodel.Albums;
 import com.mysema.query.types.path.*;
 
 import com.mysema.query.types.PathMetadata;

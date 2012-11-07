@@ -1,14 +1,24 @@
-package fr.cantor.test.datamodel;
+package com.mmounirou.spotify.datamodel;
 
 
 /**
- * Artists is a Querydsl bean type
+ * Albums is a Querydsl bean type
  */
-public class Artists {
+public class Albums {
+
+    private String albumartist;
 
     private String name;
 
     private String uri;
+
+    public String getAlbumartist() {
+        return albumartist;
+    }
+
+    public void setAlbumartist(String albumartist) {
+        this.albumartist = albumartist;
+    }
 
     public String getName() {
         return name;

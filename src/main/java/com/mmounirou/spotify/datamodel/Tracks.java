@@ -1,4 +1,4 @@
-package fr.cantor.test.datamodel;
+package com.mmounirou.spotify.datamodel;
 
 
 /**

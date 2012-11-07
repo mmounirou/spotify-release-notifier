@@ -1,4 +1,4 @@
-package fr.cantor.test;
+package com.mmounirou.spotify;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,8 +11,8 @@ import java.sql.Statement;
 import org.sqlite.SQLiteJDBCLoader;
 
 import com.google.common.io.CharStreams;
+import com.mmounirou.spotify.generator.GeneratorUtils;
 
-import fr.cantor.test.generator.GeneratorUtils;
 
 public class Sample
 {
