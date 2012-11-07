@@ -1,0 +1,364 @@
+2012-10-20 01:19:15,589 - [INFO] - from play in main 
+Listening for HTTP on port 9000...
+
+2012-10-20 01:19:29,162 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+database [default] connected at jdbc:h2:mem:play
+
+2012-10-20 01:19:30,971 - [ERROR] - from application in New I/O  worker #1 
+
+
+! @6c494cf7d - Internal server error, for request [GET /] ->
+
+play.api.db.evolutions.InvalidDatabaseRevision: Database 'default' needs evolution! [An SQL script need to be run on your database.]
+	at play.api.db.evolutions.EvolutionsPlugin$$anonfun$onStart$1$$anonfun$apply$1.apply$mcV$sp(Evolutions.scala:427) ~[play_2.9.1.jar:2.0.4]
+	at play.api.db.evolutions.EvolutionsPlugin.withLock(Evolutions.scala:448) ~[play_2.9.1.jar:2.0.4]
+	at play.api.db.evolutions.EvolutionsPlugin$$anonfun$onStart$1.apply(Evolutions.scala:414) ~[play_2.9.1.jar:2.0.4]
+	at play.api.db.evolutions.EvolutionsPlugin$$anonfun$onStart$1.apply(Evolutions.scala:412) ~[play_2.9.1.jar:2.0.4]
+	at scala.collection.LinearSeqOptimized$class.foreach(LinearSeqOptimized.scala:59) ~[scala-library.jar:0.11.3]
+	at scala.collection.immutable.List.foreach(List.scala:45) ~[scala-library.jar:0.11.3]
+	at play.api.db.evolutions.EvolutionsPlugin.onStart(Evolutions.scala:412) ~[play_2.9.1.jar:2.0.4]
+	at play.api.Play$$anonfun$start$1.apply(Play.scala:60) ~[play_2.9.1.jar:2.0.4]
+	at play.api.Play$$anonfun$start$1.apply(Play.scala:60) ~[play_2.9.1.jar:2.0.4]
+	at scala.collection.LinearSeqOptimized$class.foreach(LinearSeqOptimized.scala:59) ~[scala-library.jar:0.11.3]
+	at scala.collection.immutable.List.foreach(List.scala:45) ~[scala-library.jar:0.11.3]
+	at play.api.Play$.start(Play.scala:60) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$3$$anonfun$1.apply(ApplicationProvider.scala:125) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$3$$anonfun$1.apply(ApplicationProvider.scala:112) ~[play_2.9.1.jar:2.0.4]
+	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.11.3]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$3.apply(ApplicationProvider.scala:112) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$3.apply(ApplicationProvider.scala:110) ~[play_2.9.1.jar:2.0.4]
+	at scala.Either$RightProjection.flatMap(Either.scala:277) ~[scala-library.jar:0.11.3]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1.jar:2.0.4]
+	at akka.dispatch.Future$$anon$3.liftedTree1$1(Future.scala:195) ~[akka-actor.jar:2.0.2]
+	at akka.dispatch.Future$$anon$3.run(Future.scala:194) ~[akka-actor.jar:2.0.2]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:94) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1381) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) ~[akka-actor.jar:2.0.2]
+
+2012-10-20 01:19:36,247 - [WARN] - from play in New I/O  worker #1 
+Applying evolution script for database 'default':
+
+# --- Rev:1,Ups - b2b5b05
+create table artist (
+id                        bigint not null,
+name                      varchar(255),
+href                      varchar(255),
+constraint uq_artist_href unique (href),
+constraint pk_artist primary key (id))
+;
+
+create sequence artist_seq;
+
+
+2012-10-20 01:19:36,927 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+database [default] connected at jdbc:h2:mem:play
+
+2012-10-20 01:19:37,511 - [INFO] - from play in play-akka.actor.default-dispatcher-1 
+Application started (Dev)
+
+2012-10-20 01:19:37,631 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-4 
+Anonymous user trying to access : /
+
+2012-10-20 01:20:19,079 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+Anonymous user trying to access : /
+
+2012-10-20 01:26:11,729 - [ERROR] - from application in New I/O  worker #12 
+
+
+! @6c494cf7e - Internal server error, for request [GET /] ->
+
+play.api.PlayException: Cannot load plugin [Plugin [service.InMemoryUserService] cannot been instantiated.]
+	at play.api.PlayException$.apply(Exceptions.scala:122) ~[play_2.9.1.jar:2.0.4]
+	at play.api.Application$$anonfun$7$$anonfun$apply$7.apply(Application.scala:178) ~[play_2.9.1.jar:2.0.4]
+	at play.api.Application$$anonfun$7$$anonfun$apply$7.apply(Application.scala:160) ~[play_2.9.1.jar:2.0.4]
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:194) ~[scala-library.jar:0.11.3]
+	at scala.collection.TraversableLike$$anonfun$map$1.apply(TraversableLike.scala:194) ~[scala-library.jar:0.11.3]
+	at scala.collection.LinearSeqOptimized$class.foreach(LinearSeqOptimized.scala:59) ~[scala-library.jar:0.11.3]
+	at scala.collection.immutable.List.foreach(List.scala:45) ~[scala-library.jar:0.11.3]
+	at scala.collection.TraversableLike$class.map(TraversableLike.scala:194) ~[scala-library.jar:0.11.3]
+	at scala.collection.immutable.List.map(List.scala:45) ~[scala-library.jar:0.11.3]
+	at play.api.Application$$anonfun$7.apply(Application.scala:160) ~[play_2.9.1.jar:2.0.4]
+	at play.api.Application$$anonfun$7.apply(Application.scala:183) ~[play_2.9.1.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) ~[play_2.9.1.jar:2.0.4]
+	at play.api.Application.<init>(Application.scala:158) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$3$$anonfun$1.apply(ApplicationProvider.scala:121) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$3$$anonfun$1.apply(ApplicationProvider.scala:112) ~[play_2.9.1.jar:2.0.4]
+	at scala.Option.map(Option.scala:133) ~[scala-library.jar:0.11.3]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$3.apply(ApplicationProvider.scala:112) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1$$anonfun$apply$3.apply(ApplicationProvider.scala:110) ~[play_2.9.1.jar:2.0.4]
+	at scala.Either$RightProjection.flatMap(Either.scala:277) ~[scala-library.jar:0.11.3]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ReloadableApplication$$anonfun$get$1.apply(ApplicationProvider.scala:110) ~[play_2.9.1.jar:2.0.4]
+	at akka.dispatch.Future$$anon$3.liftedTree1$1(Future.scala:195) ~[akka-actor.jar:2.0.2]
+	at akka.dispatch.Future$$anon$3.run(Future.scala:194) ~[akka-actor.jar:2.0.2]
+	at akka.dispatch.TaskInvocation.run(AbstractDispatcher.scala:94) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask$AdaptedRunnableAction.exec(ForkJoinTask.java:1381) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) ~[akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) ~[akka-actor.jar:2.0.2]
+Caused by: java.lang.ClassNotFoundException: service.InMemoryUserService
+	at java.net.URLClassLoader$1.run(URLClassLoader.java:202) ~[na:1.6.0_35]
+	at java.security.AccessController.doPrivileged(Native Method) ~[na:1.6.0_35]
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:190) ~[na:1.6.0_35]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:306) ~[na:1.6.0_35]
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:247) ~[na:1.6.0_35]
+	at play.api.Application$$anonfun$7$$anonfun$apply$7.apply(Application.scala:162) ~[play_2.9.1.jar:2.0.4]
+	... 27 common frames omitted
+
+2012-10-20 01:26:20,694 - [INFO] - from play in play-akka.actor.default-dispatcher-5 
+database [default] connected at jdbc:h2:mem:play
+
+2012-10-20 01:26:21,177 - [INFO] - from application in play-akka.actor.default-dispatcher-5 
+Loaded BCryptPasswordHasher
+
+2012-10-20 01:26:21,179 - [INFO] - from application in play-akka.actor.default-dispatcher-5 
+Registered Identity Provider: twitter
+
+2012-10-20 01:26:21,179 - [INFO] - from application in play-akka.actor.default-dispatcher-5 
+Registered Identity Provider: facebook
+
+2012-10-20 01:26:21,179 - [INFO] - from application in play-akka.actor.default-dispatcher-5 
+Registered Identity Provider: google
+
+2012-10-20 01:26:21,179 - [INFO] - from application in play-akka.actor.default-dispatcher-5 
+Registered Identity Provider: linkedin
+
+2012-10-20 01:26:21,180 - [INFO] - from application in play-akka.actor.default-dispatcher-5 
+Registered Identity Provider: userpass
+
+2012-10-20 01:26:21,180 - [INFO] - from application in play-akka.actor.default-dispatcher-5 
+Registered Identity Provider: github
+
+2012-10-20 01:26:21,180 - [INFO] - from play in play-akka.actor.default-dispatcher-5 
+Application started (Dev)
+
+2012-10-20 01:26:21,192 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+Anonymous user trying to access : /
+
+2012-10-20 01:26:28,020 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+callback url = http://localhost:9000/authenticate/twitter
+
+2012-10-20 01:26:29,896 - [ERROR] - from application in play-akka.actor.actions-dispatcher-8 
+Error retrieving request token
+oauth.signpost.exception.OAuthCommunicationException: Communication with the service provider failed: Server returned HTTP response code: 401 for URL: https://twitter.com/oauth/request_token
+	at oauth.signpost.AbstractOAuthProvider.retrieveToken(AbstractOAuthProvider.java:214) ~[signpost-core.jar:na]
+	at oauth.signpost.AbstractOAuthProvider.retrieveRequestToken(AbstractOAuthProvider.java:69) ~[signpost-core.jar:na]
+	at play.api.libs.oauth.OAuth.retrieveRequestToken(OAuth.scala:32) ~[play_2.9.1.jar:2.0.4]
+	at securesocial.core.OAuth1Provider$$anonfun$doAuth$2.apply(OAuth1Provider.scala:94) [classes/:na]
+	at securesocial.core.OAuth1Provider$$anonfun$doAuth$2.apply(OAuth1Provider.scala:87) [classes/:na]
+	at scala.Option.getOrElse(Option.scala:108) [scala-library.jar:0.11.3]
+	at securesocial.core.OAuth1Provider.doAuth(OAuth1Provider.scala:87) [classes/:na]
+	at securesocial.core.IdentityProvider.authenticate(IdentityProvider.scala:70) [classes/:na]
+	at securesocial.controllers.LoginPage$$anonfun$handleAuth$1.apply(LoginPage.scala:84) [classes/:na]
+	at securesocial.controllers.LoginPage$$anonfun$handleAuth$1.apply(LoginPage.scala:80) [classes/:na]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) [play_2.9.1.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:125) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) [play_2.9.1.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) [akka-actor.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) [play_2.9.1.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor.jar:2.0.2]
+Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://twitter.com/oauth/request_token
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:1.6.0_35]
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39) ~[na:1.6.0_35]
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27) ~[na:1.6.0_35]
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:513) ~[na:1.6.0_35]
+	at sun.net.www.protocol.http.HttpURLConnection$6.run(HttpURLConnection.java:1491) ~[na:1.6.0_35]
+	at java.security.AccessController.doPrivileged(Native Method) ~[na:1.6.0_35]
+	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(HttpURLConnection.java:1485) ~[na:1.6.0_35]
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1139) ~[na:1.6.0_35]
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:234) ~[na:1.6]
+	at oauth.signpost.basic.HttpURLConnectionResponseAdapter.getContent(HttpURLConnectionResponseAdapter.java:18) ~[signpost-core.jar:na]
+	at oauth.signpost.AbstractOAuthProvider.handleUnexpectedResponse(AbstractOAuthProvider.java:228) ~[signpost-core.jar:na]
+	at oauth.signpost.AbstractOAuthProvider.retrieveToken(AbstractOAuthProvider.java:189) ~[signpost-core.jar:na]
+	... 25 common frames omitted
+Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://twitter.com/oauth/request_token
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1436) ~[na:1.6.0_35]
+	at java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:379) ~[na:1.6.0_35]
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:318) ~[na:1.6]
+	at oauth.signpost.basic.HttpURLConnectionResponseAdapter.getStatusCode(HttpURLConnectionResponseAdapter.java:22) ~[signpost-core.jar:na]
+	at oauth.signpost.AbstractOAuthProvider.retrieveToken(AbstractOAuthProvider.java:178) ~[signpost-core.jar:na]
+	... 25 common frames omitted
+
+2012-10-20 01:26:29,908 - [ERROR] - from application in play-akka.actor.actions-dispatcher-8 
+
+
+! @6c494cf7f - Internal server error, for request [GET /authenticate/twitter] ->
+
+play.core.ActionInvoker$$anonfun$receive$1$$anon$1: Execution exception [[AuthenticationException: null]]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:134) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) [play_2.9.1.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) [akka-actor.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) [play_2.9.1.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor.jar:2.0.2]
+Caused by: securesocial.core.AuthenticationException: null
+	at securesocial.core.OAuth1Provider$$anonfun$doAuth$2.apply(OAuth1Provider.scala:102) ~[classes/:na]
+	at securesocial.core.OAuth1Provider$$anonfun$doAuth$2.apply(OAuth1Provider.scala:87) ~[classes/:na]
+	at scala.Option.getOrElse(Option.scala:108) ~[scala-library.jar:0.11.3]
+	at securesocial.core.OAuth1Provider.doAuth(OAuth1Provider.scala:87) ~[classes/:na]
+	at securesocial.core.IdentityProvider.authenticate(IdentityProvider.scala:70) ~[classes/:na]
+	at securesocial.controllers.LoginPage$$anonfun$handleAuth$1.apply(LoginPage.scala:84) ~[classes/:na]
+	at securesocial.controllers.LoginPage$$anonfun$handleAuth$1.apply(LoginPage.scala:80) ~[classes/:na]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:125) [play_2.9.1.jar:2.0.4]
+	... 11 common frames omitted
+
+2012-10-20 01:26:43,067 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+authorizationUrl = https://graph.facebook.com/oauth/authorize
+
+2012-10-20 01:26:43,068 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+Redirecting to : [https://graph.facebook.com/oauth/authorize?scope=email&client_id=your_client_id&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2Fauthenticate%2Ffacebook&response_type=code&state=b88c527f-4aba-4f6c-9434-51ef0ce0a4f2]
+
+2012-10-20 01:26:56,779 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+authorizationUrl = https://accounts.google.com/o/oauth2/auth
+
+2012-10-20 01:26:56,779 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+Redirecting to : [https://accounts.google.com/o/oauth2/auth?scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email&client_id=your_client_id&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2Fauthenticate%2Fgoogle&response_type=code&state=efea5fa0-5ae6-4087-8960-6a4656ffb3c8]
+
+2012-10-20 01:27:03,260 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+callback url = http://localhost:9000/authenticate/linkedin
+
+2012-10-20 01:27:08,841 - [ERROR] - from application in play-akka.actor.actions-dispatcher-8 
+Error retrieving request token
+oauth.signpost.exception.OAuthCommunicationException: Communication with the service provider failed: Server returned HTTP response code: 401 for URL: https://api.linkedin.com/uas/oauth/requestToken
+	at oauth.signpost.AbstractOAuthProvider.retrieveToken(AbstractOAuthProvider.java:214) ~[signpost-core.jar:na]
+	at oauth.signpost.AbstractOAuthProvider.retrieveRequestToken(AbstractOAuthProvider.java:69) ~[signpost-core.jar:na]
+	at play.api.libs.oauth.OAuth.retrieveRequestToken(OAuth.scala:32) ~[play_2.9.1.jar:2.0.4]
+	at securesocial.core.OAuth1Provider$$anonfun$doAuth$2.apply(OAuth1Provider.scala:94) [classes/:na]
+	at securesocial.core.OAuth1Provider$$anonfun$doAuth$2.apply(OAuth1Provider.scala:87) [classes/:na]
+	at scala.Option.getOrElse(Option.scala:108) [scala-library.jar:0.11.3]
+	at securesocial.core.OAuth1Provider.doAuth(OAuth1Provider.scala:87) [classes/:na]
+	at securesocial.core.IdentityProvider.authenticate(IdentityProvider.scala:70) [classes/:na]
+	at securesocial.controllers.LoginPage$$anonfun$handleAuth$1.apply(LoginPage.scala:84) [classes/:na]
+	at securesocial.controllers.LoginPage$$anonfun$handleAuth$1.apply(LoginPage.scala:80) [classes/:na]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) [play_2.9.1.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:125) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) [play_2.9.1.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) [akka-actor.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) [play_2.9.1.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor.jar:2.0.2]
+Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://api.linkedin.com/uas/oauth/requestToken
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method) ~[na:1.6.0_35]
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39) ~[na:1.6.0_35]
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27) ~[na:1.6.0_35]
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:513) ~[na:1.6.0_35]
+	at sun.net.www.protocol.http.HttpURLConnection$6.run(HttpURLConnection.java:1491) ~[na:1.6.0_35]
+	at java.security.AccessController.doPrivileged(Native Method) ~[na:1.6.0_35]
+	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(HttpURLConnection.java:1485) ~[na:1.6.0_35]
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1139) ~[na:1.6.0_35]
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(HttpsURLConnectionImpl.java:234) ~[na:1.6]
+	at oauth.signpost.basic.HttpURLConnectionResponseAdapter.getContent(HttpURLConnectionResponseAdapter.java:18) ~[signpost-core.jar:na]
+	at oauth.signpost.AbstractOAuthProvider.handleUnexpectedResponse(AbstractOAuthProvider.java:228) ~[signpost-core.jar:na]
+	at oauth.signpost.AbstractOAuthProvider.retrieveToken(AbstractOAuthProvider.java:189) ~[signpost-core.jar:na]
+	... 25 common frames omitted
+Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://api.linkedin.com/uas/oauth/requestToken
+	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1436) ~[na:1.6.0_35]
+	at java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:379) ~[na:1.6.0_35]
+	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:318) ~[na:1.6]
+	at oauth.signpost.basic.HttpURLConnectionResponseAdapter.getStatusCode(HttpURLConnectionResponseAdapter.java:22) ~[signpost-core.jar:na]
+	at oauth.signpost.AbstractOAuthProvider.retrieveToken(AbstractOAuthProvider.java:178) ~[signpost-core.jar:na]
+	... 25 common frames omitted
+
+2012-10-20 01:27:08,843 - [ERROR] - from application in play-akka.actor.actions-dispatcher-8 
+
+
+! @6c494cf7g - Internal server error, for request [GET /authenticate/linkedin] ->
+
+play.core.ActionInvoker$$anonfun$receive$1$$anon$1: Execution exception [[AuthenticationException: null]]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:134) [play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:115) [play_2.9.1.jar:2.0.4]
+	at akka.actor.Actor$class.apply(Actor.scala:318) [akka-actor.jar:2.0.2]
+	at play.core.ActionInvoker.apply(Invoker.scala:113) [play_2.9.1.jar:2.0.4]
+	at akka.actor.ActorCell.invoke(ActorCell.scala:626) [akka-actor.jar:2.0.2]
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:197) [akka-actor.jar:2.0.2]
+	at akka.dispatch.Mailbox.run(Mailbox.scala:179) [akka-actor.jar:2.0.2]
+	at akka.dispatch.ForkJoinExecutorConfigurator$MailboxExecutionTask.exec(AbstractDispatcher.scala:516) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinTask.doExec(ForkJoinTask.java:259) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:975) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinPool.runWorker(ForkJoinPool.java:1479) [akka-actor.jar:2.0.2]
+	at akka.jsr166y.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:104) [akka-actor.jar:2.0.2]
+Caused by: securesocial.core.AuthenticationException: null
+	at securesocial.core.OAuth1Provider$$anonfun$doAuth$2.apply(OAuth1Provider.scala:102) ~[classes/:na]
+	at securesocial.core.OAuth1Provider$$anonfun$doAuth$2.apply(OAuth1Provider.scala:87) ~[classes/:na]
+	at scala.Option.getOrElse(Option.scala:108) ~[scala-library.jar:0.11.3]
+	at securesocial.core.OAuth1Provider.doAuth(OAuth1Provider.scala:87) ~[classes/:na]
+	at securesocial.core.IdentityProvider.authenticate(IdentityProvider.scala:70) ~[classes/:na]
+	at securesocial.controllers.LoginPage$$anonfun$handleAuth$1.apply(LoginPage.scala:84) ~[classes/:na]
+	at securesocial.controllers.LoginPage$$anonfun$handleAuth$1.apply(LoginPage.scala:80) ~[classes/:na]
+	at play.api.mvc.Action$$anon$1.apply(Action.scala:170) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1$$anonfun$6.apply(Invoker.scala:126) ~[play_2.9.1.jar:2.0.4]
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:17) ~[play_2.9.1.jar:2.0.4]
+	at play.core.ActionInvoker$$anonfun$receive$1.apply(Invoker.scala:125) [play_2.9.1.jar:2.0.4]
+	... 11 common frames omitted
+
+2012-10-20 01:39:31,251 - [INFO] - from play in play-akka.actor.default-dispatcher-6 
+database [default] connected at jdbc:h2:mem:play
+
+2012-10-20 01:39:31,703 - [INFO] - from application in play-akka.actor.default-dispatcher-6 
+Loaded BCryptPasswordHasher
+
+2012-10-20 01:39:31,704 - [INFO] - from application in play-akka.actor.default-dispatcher-6 
+Registered Identity Provider: twitter
+
+2012-10-20 01:39:31,704 - [INFO] - from application in play-akka.actor.default-dispatcher-6 
+Registered Identity Provider: facebook
+
+2012-10-20 01:39:31,704 - [INFO] - from application in play-akka.actor.default-dispatcher-6 
+Registered Identity Provider: google
+
+2012-10-20 01:39:31,704 - [INFO] - from application in play-akka.actor.default-dispatcher-6 
+Registered Identity Provider: linkedin
+
+2012-10-20 01:39:31,705 - [INFO] - from application in play-akka.actor.default-dispatcher-6 
+Registered Identity Provider: userpass
+
+2012-10-20 01:39:31,705 - [INFO] - from application in play-akka.actor.default-dispatcher-6 
+Registered Identity Provider: github
+
+2012-10-20 01:39:31,705 - [INFO] - from play in play-akka.actor.default-dispatcher-6 
+Application started (Dev)
+
+2012-10-20 01:39:31,720 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+Anonymous user trying to access : /
+
+2012-10-20 01:39:33,811 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+authorizationUrl = https://graph.facebook.com/oauth/authorize
+
+2012-10-20 01:39:33,812 - [DEBUG] - from application in play-akka.actor.actions-dispatcher-8 
+Redirecting to : [https://graph.facebook.com/oauth/authorize?scope=email&client_id=480984795265434&redirect_uri=http%3A%2F%2Flocalhost%3A9000%2Fauthenticate%2Ffacebook&response_type=code&state=2b70c583-ac45-42eb-a2cd-2e62f4e82ce3]
+
