@@ -12,8 +12,8 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mmounirou.spotify.commons.util.ListUtils;
+import com.mmounirou.spotify.datamodel.Albums;
 import com.mmounirou.spotify.datamodel.query.QAlbums;
-import com.mmounirou.spoty4j.core.Album;
 import com.mysema.query.sql.SQLQueryImpl;
 import com.mysema.query.sql.SQLiteTemplates;
 import com.mysema.query.sql.dml.SQLDeleteClause;
@@ -30,7 +30,7 @@ public class AlbumDao
 		m_connection = connection;
 	}
 
-	public List<String> exist(List<String> trackHrefs)
+	public FluentIterable<String> exist(List<String> trackHrefs)
 	{
 
 		Function<List<String>, Iterable<String>> filterExistingAlbums = new Function<List<String>, Iterable<String>>()
@@ -44,35 +44,35 @@ public class AlbumDao
 				return query.from(tartists).where(tartists.uri.in(splittedAlbums)).listDistinct(tartists.uri);
 			}
 		};
-		return FluentIterable.from(ListUtils.split(MAX_ELMT_BY_QUERY, trackHrefs)).transformAndConcat(filterExistingAlbums).toImmutableList();
+		return FluentIterable.from(ListUtils.split(MAX_ELMT_BY_QUERY, trackHrefs)).transformAndConcat(filterExistingAlbums);
 
 	}
 
-	public void addAlbums(Collection<Album> albums)
+	public void addAlbums(Collection<Albums> albums)
 	{
 		if (!albums.isEmpty())
 		{
 			QAlbums talbums = QAlbums.tAlbums;
 			SQLInsertClause insertClause = new SQLInsertClause(m_connection, new SQLiteTemplates(), talbums);
-			for (Album album : albums)
+			for (Albums album : albums)
 			{
-				insertClause.set(talbums.uri, album.getHref()).set(talbums.name, album.getName()).addBatch();
+				insertClause.set(talbums.uri, album.getUri()).set(talbums.name, album.getName()).addBatch();
 			}
 			insertClause.execute();
 		}
 	}
 
-	public Collection<Album> addAlbumsIfNotExists(Collection<Album> allAlbums)
+	public Collection<Albums> addAlbumsIfNotExists(Collection<Albums> allAlbums)
 	{
-		Map<String, Album> albumById = Maps.newHashMap();
-		for (Album album : allAlbums)
+		Map<String, Albums> albumById = Maps.newHashMap();
+		for (Albums album : allAlbums)
 		{
-			albumById.put(album.getHref(), album);
+			albumById.put(album.getUri(), album);
 		}
 
-		List<String> alreadySeenAlbum = exist(Lists.newArrayList(albumById.keySet()));
-		albumById.keySet().removeAll(alreadySeenAlbum);
-		Collection<Album> insertedAlbums = albumById.values();
+		FluentIterable<String> alreadySeenAlbum = exist(Lists.newArrayList(albumById.keySet()));
+		albumById.keySet().removeAll(alreadySeenAlbum.toImmutableList());
+		Collection<Albums> insertedAlbums = albumById.values();
 		addAlbums(insertedAlbums);
 		return insertedAlbums;
 	}
