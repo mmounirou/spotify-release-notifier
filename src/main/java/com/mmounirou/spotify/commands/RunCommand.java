@@ -80,7 +80,7 @@ public class RunCommand implements Command
 			ArtistDao artistDao = new ArtistDao(connection);
 			AlbumDao albumDao = new AlbumDao(connection);
 
-			Map<String, Album> albumById =Maps.uniqueIndex(fetchAlbums(artistDao.all()), toHref);
+			Map<String, Album> albumById =Maps.uniqueIndex(fetchAlbums(artistDao.all()).toImmutableSet(), toHref);
 			final Set<String> existingAlbumsHref = albumDao.exist(ImmutableList.copyOf(albumById.keySet())).toImmutableSet();
 
 			Predicate<Album> newAlbumPredicate = new Predicate<Album>()
