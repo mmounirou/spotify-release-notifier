@@ -27,6 +27,11 @@
 			<version>2.8.2</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-email</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
 			<groupId>com.mmounirou.spotify</groupId>
 			<artifactId>spotify-web-4j</artifactId>
 			<version>1.1-SNAPSHOT</version>
