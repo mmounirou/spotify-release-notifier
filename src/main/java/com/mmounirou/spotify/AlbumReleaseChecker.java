@@ -61,6 +61,12 @@ public class AlbumReleaseChecker
 			return new NewAlbumEvent(album);
 		}
 
+		public static Object newArtist(Artists addedArtist)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
 
 	private EventBus eventBus;

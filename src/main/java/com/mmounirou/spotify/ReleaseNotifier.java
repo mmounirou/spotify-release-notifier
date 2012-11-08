@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
+import com.google.common.eventbus.EventBus;
 import com.google.common.io.Files;
 import com.mmounirou.spotify.commands.ArtistCommand;
 import com.mmounirou.spotify.commands.Command;
@@ -58,6 +59,8 @@ public class ReleaseNotifier
 
 	public static void main(String[] args)
 	{
+		EventBus eventBus = new EventBus(ReleaseNotifier.class.getName());
+		
 		try
 		{
 			CommandLine commandLine = new PosixParser().parse(OPTIONS, args);
@@ -74,14 +77,14 @@ public class ReleaseNotifier
 			if ( commandLine.hasOption(ARTIST.getLongOpt()) )
 			{
 				Iterable<String> strArtists = Splitter.on(",").omitEmptyStrings().trimResults().split(commandLine.getOptionValue(ARTIST.getLongOpt()));
-				Command artistCommand = new ArtistCommand(strArtists);
+				Command artistCommand = new ArtistCommand(eventBus,strArtists);
 				artistCommand.run();
 			}
 			if ( commandLine.hasOption(ARTIST_FILE.getLongOpt()) )
 			{
 				File artistFile = (File) commandLine.getParsedOptionValue(ARTIST_FILE.getLongOpt());
 				List<String> strArtists = Files.readLines(artistFile, Charsets.UTF_8);
-				Command artistCommand = new ArtistCommand(strArtists);
+				Command artistCommand = new ArtistCommand(eventBus,strArtists);
 				artistCommand.run();
 			}
 			if ( commandLine.hasOption(TEST.getLongOpt()) )
