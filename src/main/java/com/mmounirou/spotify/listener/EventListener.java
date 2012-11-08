@@ -1,7 +1,11 @@
 package com.mmounirou.spotify.listener;
 
 import com.google.common.eventbus.Subscribe;
+import com.mmounirou.spotify.commands.ArtistCommand;
 import com.mmounirou.spotify.commands.Command;
+import com.mmounirou.spotify.commands.DropCommand;
+import com.mmounirou.spotify.commands.ResetCommand;
+import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
 import com.mmounirou.spoty4j.core.Album;
 import com.mmounirou.spoty4j.core.Artist;
@@ -152,6 +156,47 @@ public interface EventListener
 		public void receiveCommandEnd(Command event)
 		{
 		}
+
+		@Subscribe
+		public void receiveRunCommandStart(RunCommand event)
+		{
+		}
+
+		@Subscribe
+		public void receiveRunCommandEnd(RunCommand event)
+		{	
+		}
+
+		@Subscribe
+		public void receiveArtistCommandStart(ArtistCommand event)
+		{
+			
+		}
+
+		@Subscribe
+		public void receiveArtistCommandEnd(ArtistCommand event)
+		{
+		}
+
+		@Subscribe
+		public void receiveDropCommandStart(DropCommand event)
+		{
+		}
+
+		@Subscribe
+		public void receiveDropCommandEnd(DropCommand event)
+		{
+		}
+
+		@Subscribe
+		public void receiveResetCommandStart(ResetCommand event)
+		{
+		}
+
+		@Subscribe
+		public void receiveResetCommandEnd(ResetCommand event)
+		{
+		}
 		
 	}
 	
@@ -178,5 +223,31 @@ public interface EventListener
 
 	@Subscribe
 	public void receiveCommandEnd(Command event);
+
+	@Subscribe
+	public void receiveRunCommandStart(RunCommand event);
+
+	@Subscribe
+	public void receiveRunCommandEnd(RunCommand event);
+	
+	@Subscribe
+	public void receiveArtistCommandStart(ArtistCommand event);
+
+	@Subscribe
+	public void receiveArtistCommandEnd(ArtistCommand event);
+	
+	
+	@Subscribe
+	public void receiveDropCommandStart(DropCommand event);
+
+	@Subscribe
+	public void receiveDropCommandEnd(DropCommand event);
+	
+	
+	@Subscribe
+	public void receiveResetCommandStart(ResetCommand event);
+
+	@Subscribe
+	public void receiveResetCommandEnd(ResetCommand event);
 
 }
