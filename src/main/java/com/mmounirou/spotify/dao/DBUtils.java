@@ -1,71 +1,53 @@
 package com.mmounirou.spotify.dao;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.swing.filechooser.FileSystemView;
-
 import com.google.common.io.CharStreams;
-import com.mmounirou.spotify.Sample;
-
+import com.mmounirou.spotify.commons.sql.ConnectionUtils;
+import com.mmounirou.spotify.generator.GeneratorUtils;
 
 public class DBUtils
 {
 
-	public static Connection initDataBase(boolean dropDb) throws SQLException, IOException
+	public static void initDataBase() throws Exception
 	{
 		// load the sqlite-JDBC driver using the current class loader
-		try
-		{
-			Class.forName("org.sqlite.JDBC");
-		}
-		catch ( ClassNotFoundException e )
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Class.forName("org.sqlite.JDBC");
 
 		Connection connection = null;
-
-		File appDirectoryFile = new File(FileSystemView.getFileSystemView().getHomeDirectory(),".spotify-release");
-		appDirectoryFile.mkdirs();
-		File dbFile = new File(appDirectoryFile,"spotify-release.db");
-		
-		if ( dropDb )
-		{
-			dbFile.delete();
-		}
-
+		File dbFile = AppConfig.getDbFile();
 		boolean newDB = !dbFile.exists();
-
-		// create a database connection
 		connection = DriverManager.getConnection(String.format("jdbc:sqlite:%s", dbFile.getAbsolutePath()));
-
-		if ( newDB )
+		try
 		{
-			Statement statement = connection.createStatement();
-			try
+			if ( newDB )
 			{
-				statement.setQueryTimeout(30); // set timeout to 30 sec.
-
-				for ( String strQuery : CharStreams.readLines(new InputStreamReader(Sample.class.getResourceAsStream("/database.sql"))) )
+				Statement statement = connection.createStatement();
+				try
 				{
-					statement.execute(strQuery);
-				}
+					statement.setQueryTimeout(30); // set timeout to 30 sec.
 
-			}
-			finally
-			{
-				statement.close();
+					for ( String strQuery : CharStreams.readLines(new InputStreamReader(GeneratorUtils.class.getResourceAsStream("/database.sql"))) )
+					{
+						statement.execute(strQuery);
+					}
+
+				}
+				finally
+				{
+					statement.close();
+				}
 			}
 		}
-
-		return connection;
+		finally
+		{
+			ConnectionUtils.closeQuietly(connection);
+		}
 	}
 
 	public static Connection connectToDb() throws SQLException

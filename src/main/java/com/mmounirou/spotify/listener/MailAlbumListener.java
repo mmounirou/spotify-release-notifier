@@ -12,9 +12,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
-import com.mmounirou.spotify.AlbumReleaseChecker.EndEvent;
-import com.mmounirou.spotify.AlbumReleaseChecker.NewAlbumEvent;
-import com.mmounirou.spotify.AlbumReleaseChecker.StartEvent;
+import com.mmounirou.spotify.listener.Events.EndEvent;
+import com.mmounirou.spotify.listener.Events.NewAlbumEvent;
+import com.mmounirou.spotify.listener.Events.StartEvent;
 import com.mmounirou.spoty4j.core.Album;
 import com.mmounirou.spoty4j.core.Artist;
 

@@ -23,6 +23,7 @@ import com.mmounirou.spotify.commands.LearnCommand;
 import com.mmounirou.spotify.commands.ResetCommand;
 import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.TestCommand;
+import com.mmounirou.spotify.dao.DBUtils;
 
 @SuppressWarnings("static-access")
 public class ReleaseNotifier
@@ -59,10 +60,13 @@ public class ReleaseNotifier
 
 	public static void main(String[] args)
 	{
-		EventBus eventBus = new EventBus(ReleaseNotifier.class.getName());
 		
 		try
 		{
+			DBUtils.initDataBase();
+			EventBus eventBus = new EventBus(ReleaseNotifier.class.getName());
+
+			
 			CommandLine commandLine = new PosixParser().parse(OPTIONS, args);
 			if ( commandLine.hasOption(DROP.getLongOpt()) )
 			{
@@ -89,12 +93,12 @@ public class ReleaseNotifier
 			}
 			if ( commandLine.hasOption(TEST.getLongOpt()) )
 			{
-				Command command = new TestCommand();
+				Command command = new TestCommand(eventBus);
 				command.run();
 			}
 			if ( commandLine.hasOption(LEARN.getLongOpt()) )
 			{
-				Command command = new LearnCommand();
+				Command command = new LearnCommand(eventBus);
 				command.run();
 			}
 			if ( commandLine.hasOption(HELP.getLongOpt()) )
@@ -103,7 +107,7 @@ public class ReleaseNotifier
 			}
 			if ( args.length == 0 || commandLine.hasOption(RUN.getLongOpt()) )
 			{
-				Command command = new RunCommand();
+				Command command = new RunCommand(eventBus);
 				command.run();
 			}
 

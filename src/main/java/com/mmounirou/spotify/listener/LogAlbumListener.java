@@ -1,7 +1,7 @@
 package com.mmounirou.spotify.listener;
 
 import com.google.common.eventbus.Subscribe;
-import com.mmounirou.spotify.AlbumReleaseChecker.NewAlbumEvent;
+import com.mmounirou.spotify.listener.Events.NewAlbumEvent;
 
 public class LogAlbumListener
 {
