@@ -19,10 +19,13 @@ import com.google.common.io.Files;
 import com.mmounirou.spotify.commands.ArtistCommand;
 import com.mmounirou.spotify.commands.Command;
 import com.mmounirou.spotify.commands.DropCommand;
-import com.mmounirou.spotify.commands.ResetCommand;
 import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
 import com.mmounirou.spotify.dao.DBUtils;
+import com.mmounirou.spotify.listener.EventListener.ApplicationEndEvent;
+import com.mmounirou.spotify.listener.EventListener.ApplicationStartEvent;
+import com.mmounirou.spotify.listener.LoggerListener;
+import com.mmounirou.spotify.listener.NewAlbumMailNotifierListener;
 
 @SuppressWarnings("static-access")
 public class ReleaseNotifier
@@ -59,12 +62,14 @@ public class ReleaseNotifier
 
 	public static void main(String[] args)
 	{
+		EventBus eventBus = new EventBus(ReleaseNotifier.class.getName());
+		initListeners(eventBus);
 		
 		try
 		{
+			eventBus.post(ApplicationStartEvent.of());
+			
 			DBUtils.initDataBase();
-			EventBus eventBus = new EventBus(ReleaseNotifier.class.getName());
-
 			
 			CommandLine commandLine = new PosixParser().parse(OPTIONS, args);
 			if ( commandLine.hasOption(DROP.getLongOpt()) )
@@ -74,7 +79,7 @@ public class ReleaseNotifier
 			}
 			if ( commandLine.hasOption(RESET.getLongOpt()) )
 			{
-				Command command = new ResetCommand(eventBus);
+				Command command = new DropCommand(eventBus,true);
 				command.run();
 			}
 			if ( commandLine.hasOption(ARTIST.getLongOpt()) )
@@ -118,8 +123,18 @@ public class ReleaseNotifier
 		}
 		catch ( Throwable e )
 		{
-			APP_LOGGER.error(e.getMessage());
+			APP_LOGGER.error(e.getMessage(),e);
 		}
+		finally
+		{
+			eventBus.post(ApplicationEndEvent.of());
+		}
+	}
+
+	private static void initListeners(EventBus eventBus)
+	{
+		eventBus.register(new LoggerListener(APP_LOGGER));
+		eventBus.register(new NewAlbumMailNotifierListener());
 	}
 
 	private static void usage()

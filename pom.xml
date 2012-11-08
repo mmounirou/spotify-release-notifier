@@ -69,6 +69,11 @@
 			<version>1.2.14</version>
 		</dependency>
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
 			<groupId>com.mmounirou.spotify</groupId>
 			<artifactId>spotify-web-4j</artifactId>
 			<version>${spotify-web-api.version}</version>
@@ -89,10 +94,10 @@
 						<configuration>
 							<target>
 								<echo
-									message="java ${executable.java.options} -jar ${project.build.finalName}-dist.jar %*"
+									message="java -jar ${project.build.finalName}-dist.jar %*"
 									file="${project.build.directory}/dist/${project.build.finalName}.bat" />
 								<echo
-									message="java ${executable.java.options} -jar ${project.build.finalName}-dist.jar $@"
+									message="java -jar ${project.build.finalName}-dist.jar $@"
 									file="${project.build.directory}/dist/${project.build.finalName}.sh" />
 							</target>
 						</configuration>

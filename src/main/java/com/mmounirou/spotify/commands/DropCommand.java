@@ -10,6 +10,8 @@ import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
 import com.mmounirou.spotify.listener.EventListener.AllAlbumsDroppedEvent;
 import com.mmounirou.spotify.listener.EventListener.AllArtistsDroppedEvent;
+import com.mmounirou.spotify.listener.EventListener.DropCommandEndEvent;
+import com.mmounirou.spotify.listener.EventListener.DropCommandStartEvent;
 
 public class DropCommand implements Command
 {
@@ -30,6 +32,7 @@ public class DropCommand implements Command
 
 	public void run() throws CommandException
 	{
+		m_eventBus.post(DropCommandStartEvent.of(this));
 		Connection connection = null;
 		try
 		{
@@ -51,6 +54,7 @@ public class DropCommand implements Command
 		finally
 		{
 			ConnectionUtils.closeQuietly(connection);
+			m_eventBus.post(DropCommandEndEvent.of(this));
 		}
 
 	}

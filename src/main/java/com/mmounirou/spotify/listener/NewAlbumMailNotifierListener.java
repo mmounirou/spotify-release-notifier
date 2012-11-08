@@ -50,6 +50,14 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 		albumsByArtists = HashMultimap.create();
 		m_runMode = event.getRunMode();
 	}
+	
+	@Subscribe
+	public void receiveNewAlbum(NewAlbumEvent event)
+	{
+		Album album = event.getAlbum();
+		assert m_runMode == event.getMode();// The execution is not designed for // execution
+		albumsByArtists.put(album.getArtist(), album);
+	}
 
 	@Subscribe
 	public void receiveRunCommandEnd(RunCommand event)
@@ -68,14 +76,6 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 			}
 			
 		}
-	}
-
-	@Subscribe
-	public void receiveNewAlbum(NewAlbumEvent event)
-	{
-		Album album = event.getAlbum();
-		assert m_runMode == event.getMode();// The execution is not designed for // execution
-		albumsByArtists.put(album.getArtist(), album);
 	}
 
 	private String buildHtmlMessage()

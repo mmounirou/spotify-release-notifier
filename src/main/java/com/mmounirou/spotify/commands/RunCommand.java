@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -20,6 +21,8 @@ import com.mmounirou.spotify.dao.DBUtils;
 import com.mmounirou.spotify.datamodel.Albums;
 import com.mmounirou.spotify.datamodel.Artists;
 import com.mmounirou.spotify.listener.EventListener.NewAlbumEvent;
+import com.mmounirou.spotify.listener.EventListener.RunCommandEndEvent;
+import com.mmounirou.spotify.listener.EventListener.RunCommandStartEvent;
 import com.mmounirou.spoty4j.core.Album;
 import com.mmounirou.spoty4j.core.Artist;
 
@@ -44,6 +47,7 @@ public class RunCommand implements Command
 
 	public void run() throws CommandException
 	{
+		m_eventBus.post(RunCommandStartEvent.of(this));
 
 		Function<Album, Albums> toDbAlbum = new Function<Album, Albums>()
 		{
@@ -75,13 +79,18 @@ public class RunCommand implements Command
 			ArtistDao artistDao = new ArtistDao(connection);
 			AlbumDao albumDao = new AlbumDao(connection);
 
-			Map<String, Album> albumById = Maps.uniqueIndex(fetchAlbums(artistDao.all()), toHref);
-			Set<String> existingAlbumsHref = albumDao.exist(ImmutableList.copyOf(albumById.keySet())).toImmutableSet();
+			Map<String, Album> albumById =Maps.uniqueIndex(fetchAlbums(artistDao.all()), toHref);
+			final Set<String> existingAlbumsHref = albumDao.exist(ImmutableList.copyOf(albumById.keySet())).toImmutableSet();
 
-			// in the map remove all existing albums
-			albumById.keySet().removeAll(existingAlbumsHref);
-
-			Collection<Album> newAlbums = albumById.values();
+			Predicate<Album> newAlbumPredicate = new Predicate<Album>()
+			{
+				
+				public boolean apply(@Nullable Album arg0)
+				{
+					return !existingAlbumsHref.contains(arg0.getHref());
+				}
+			};
+			Collection<Album> newAlbums = Maps.filterValues(albumById,newAlbumPredicate).values();
 
 			if ( getRunMode() == RunMode.LEARN || getRunMode() == RunMode.NORMAL )
 			{
@@ -98,6 +107,8 @@ public class RunCommand implements Command
 		finally
 		{
 			ConnectionUtils.closeQuietly(connection);
+			m_eventBus.post(RunCommandEndEvent.of(this));
+
 		}
 
 	}

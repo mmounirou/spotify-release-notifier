@@ -4,7 +4,6 @@ import com.google.common.eventbus.Subscribe;
 import com.mmounirou.spotify.commands.ArtistCommand;
 import com.mmounirou.spotify.commands.Command;
 import com.mmounirou.spotify.commands.DropCommand;
-import com.mmounirou.spotify.commands.ResetCommand;
 import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
 import com.mmounirou.spoty4j.core.Album;
@@ -114,8 +113,140 @@ public interface EventListener
 		}
 	}
 
-	public abstract static class DefaultEventListener implements EventListener
+	public static class RunCommandStartEvent
 	{
+		private final RunCommand command;
+
+		private RunCommandStartEvent(RunCommand command)
+		{
+			this.command = command;
+		}
+
+		public RunCommand getCommand()
+		{
+			return command;
+		}
+
+		public static RunCommandStartEvent of(RunCommand command)
+		{
+			return new RunCommandStartEvent(command);
+		}
+
+	}
+
+	public static class RunCommandEndEvent
+	{
+		private final RunCommand command;
+
+		private RunCommandEndEvent(RunCommand command)
+		{
+			this.command = command;
+		}
+
+		public static RunCommandEndEvent of(RunCommand runCommand)
+		{
+			return new RunCommandEndEvent(runCommand);
+		}
+
+		public RunCommand getCommand()
+		{
+			return command;
+		}
+	}
+
+	public static class ArtistCommandEndEvent
+	{
+		private final ArtistCommand command;
+
+		private ArtistCommandEndEvent(ArtistCommand command)
+		{
+			this.command = command;
+		}
+
+		public static ArtistCommandEndEvent of(ArtistCommand command)
+		{
+			return new ArtistCommandEndEvent(command);
+		}
+
+		public ArtistCommand getCommand()
+		{
+			return command;
+		}
+	}
+
+	public static class ArtistCommandStartEvent
+	{
+		private final ArtistCommand command;
+
+		private ArtistCommandStartEvent(ArtistCommand command)
+		{
+			this.command = command;
+		}
+
+		public static ArtistCommandStartEvent of(ArtistCommand command)
+		{
+			return new ArtistCommandStartEvent(command);
+		}
+
+		public ArtistCommand getCommand()
+		{
+			return command;
+		}
+	}
+
+	public static class DropCommandStartEvent
+	{
+		private final DropCommand command;
+
+		private DropCommandStartEvent(DropCommand command)
+		{
+			this.command = command;
+
+		}
+
+		public static DropCommandStartEvent of(DropCommand command)
+		{
+			return new DropCommandStartEvent(command);
+		}
+
+		public DropCommand getCommand()
+		{
+			return command;
+		}
+	}
+
+	public static class DropCommandEndEvent
+	{
+		private final DropCommand command;
+
+		private DropCommandEndEvent(DropCommand command)
+		{
+			this.command = command;
+		}
+
+		public static DropCommandEndEvent of(DropCommand command)
+		{
+			return new DropCommandEndEvent(command);
+		}
+
+		public DropCommand getCommand()
+		{
+			return command;
+		}
+	}
+
+	public static class DefaultEventListener implements EventListener
+	{
+
+		@Subscribe
+		public void receiveCommandStart(Command event)
+		{
+		}
+
+		@Subscribe
+		public void receiveCommandEnd(Command event)
+		{
+		}
 
 		@Subscribe
 		public void receiveApplicationStart(ApplicationStartEvent event)
@@ -148,58 +279,43 @@ public interface EventListener
 		}
 
 		@Subscribe
-		public void receiveCommandStart(Command event)
+		public void receiveRunCommandStart(RunCommandStartEvent event)
 		{
+			receiveCommandStart(event.getCommand());
 		}
 
 		@Subscribe
-		public void receiveCommandEnd(Command event)
+		public void receiveRunCommandEnd(RunCommandEndEvent event)
 		{
+			receiveCommandEnd(event.getCommand());
 		}
 
 		@Subscribe
-		public void receiveRunCommandStart(RunCommand event)
+		public void receiveArtistCommandStart(ArtistCommandStartEvent event)
 		{
+			receiveCommandStart(event.getCommand());
 		}
 
 		@Subscribe
-		public void receiveRunCommandEnd(RunCommand event)
-		{	
+		public void receiveArtistCommandEnd(ArtistCommandEndEvent event)
+		{
+			receiveCommandEnd(event.getCommand());
 		}
 
 		@Subscribe
-		public void receiveArtistCommandStart(ArtistCommand event)
+		public void receiveDropCommandStart(DropCommandStartEvent event)
 		{
-			
+			receiveCommandStart(event.getCommand());
 		}
 
 		@Subscribe
-		public void receiveArtistCommandEnd(ArtistCommand event)
+		public void receiveDropCommandEnd(DropCommandEndEvent event)
 		{
+			receiveCommandEnd(event.getCommand());
 		}
 
-		@Subscribe
-		public void receiveDropCommandStart(DropCommand event)
-		{
-		}
-
-		@Subscribe
-		public void receiveDropCommandEnd(DropCommand event)
-		{
-		}
-
-		@Subscribe
-		public void receiveResetCommandStart(ResetCommand event)
-		{
-		}
-
-		@Subscribe
-		public void receiveResetCommandEnd(ResetCommand event)
-		{
-		}
-		
 	}
-	
+
 	@Subscribe
 	public void receiveApplicationStart(ApplicationStartEvent event);
 
@@ -219,35 +335,20 @@ public interface EventListener
 	public void receiveAllAlbumsDropped(AllAlbumsDroppedEvent event);
 
 	@Subscribe
-	public void receiveCommandStart(Command event);
+	public void receiveRunCommandStart(RunCommandStartEvent event);
 
 	@Subscribe
-	public void receiveCommandEnd(Command event);
+	public void receiveRunCommandEnd(RunCommandEndEvent event);
 
 	@Subscribe
-	public void receiveRunCommandStart(RunCommand event);
+	public void receiveArtistCommandStart(ArtistCommandStartEvent event);
 
 	@Subscribe
-	public void receiveRunCommandEnd(RunCommand event);
-	
-	@Subscribe
-	public void receiveArtistCommandStart(ArtistCommand event);
+	public void receiveArtistCommandEnd(ArtistCommandEndEvent event);
 
 	@Subscribe
-	public void receiveArtistCommandEnd(ArtistCommand event);
-	
-	
-	@Subscribe
-	public void receiveDropCommandStart(DropCommand event);
+	public void receiveDropCommandStart(DropCommandStartEvent event);
 
 	@Subscribe
-	public void receiveDropCommandEnd(DropCommand event);
-	
-	
-	@Subscribe
-	public void receiveResetCommandStart(ResetCommand event);
-
-	@Subscribe
-	public void receiveResetCommandEnd(ResetCommand event);
-
+	public void receiveDropCommandEnd(DropCommandEndEvent event);
 }

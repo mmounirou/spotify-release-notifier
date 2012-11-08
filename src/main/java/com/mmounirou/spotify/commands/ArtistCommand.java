@@ -19,6 +19,8 @@ import com.mmounirou.spotify.commons.sql.ConnectionUtils;
 import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
 import com.mmounirou.spotify.datamodel.Artists;
+import com.mmounirou.spotify.listener.EventListener.ArtistCommandEndEvent;
+import com.mmounirou.spotify.listener.EventListener.ArtistCommandStartEvent;
 import com.mmounirou.spotify.listener.EventListener.NewArtistEvent;
 import com.mmounirou.spoty4j.api.Search;
 import com.mmounirou.spoty4j.core.Artist;
@@ -53,6 +55,8 @@ public class ArtistCommand implements Command
 
 	public void run() throws CommandException
 	{
+		m_eventBus.post(ArtistCommandStartEvent.of(this));
+		
 		Function<Artist, Artists> toDbArtists = new Function<Artist, Artists>()
 		{
 			@Nullable
@@ -101,6 +105,7 @@ public class ArtistCommand implements Command
 		finally
 		{
 			ConnectionUtils.closeQuietly(connection);
+			m_eventBus.post(ArtistCommandEndEvent.of(this));
 		}
 
 	}
