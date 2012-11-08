@@ -1,4 +1,4 @@
-package com.mmounirou.spotify;
+package com.mmounirou.spotify.listener;
 
 import java.util.Comparator;
 import java.util.Properties;
@@ -12,6 +12,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
+import com.mmounirou.spotify.AlbumReleaseChecker;
 import com.mmounirou.spotify.AlbumReleaseChecker.EndEvent;
 import com.mmounirou.spotify.AlbumReleaseChecker.NewAlbumEvent;
 import com.mmounirou.spotify.AlbumReleaseChecker.StartEvent;

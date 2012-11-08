@@ -1,4 +1,4 @@
-package com.mmounirou.spotify;
+package com.mmounirou.spotify.listener;
 
 import com.google.common.eventbus.Subscribe;
 import com.mmounirou.spotify.AlbumReleaseChecker.NewAlbumEvent;

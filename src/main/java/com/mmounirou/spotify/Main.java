@@ -25,6 +25,8 @@ import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
 import com.mmounirou.spotify.datamodel.Albums;
 import com.mmounirou.spotify.datamodel.Artists;
+import com.mmounirou.spotify.listener.LogAlbumListener;
+import com.mmounirou.spotify.listener.MailAlbumListener;
 import com.mmounirou.spoty4j.api.Search;
 import com.mmounirou.spoty4j.core.Album;
 import com.mmounirou.spoty4j.core.Artist;
