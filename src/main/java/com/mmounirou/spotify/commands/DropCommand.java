@@ -4,10 +4,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.google.common.eventbus.EventBus;
-import com.mmounirou.spotify.AlbumReleaseChecker.Events;
+import com.mmounirou.spotify.commons.sql.ConnectionUtils;
 import com.mmounirou.spotify.dao.AlbumDao;
 import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
+import com.mmounirou.spotify.listener.Events;
 
 public class DropCommand implements Command
 {
@@ -17,10 +18,10 @@ public class DropCommand implements Command
 
 	public DropCommand(EventBus eventBus)
 	{
-		this(eventBus,false);
+		this(eventBus, false);
 	}
 
-	public DropCommand(EventBus eventBus,boolean inResetMode)
+	public DropCommand(EventBus eventBus, boolean inResetMode)
 	{
 		m_eventBus = eventBus;
 		m_inResetMode = inResetMode;
@@ -28,30 +29,29 @@ public class DropCommand implements Command
 
 	public void run() throws CommandException
 	{
+		Connection connection = null;
 		try
 		{
-			Connection connection = DBUtils.connectToDb();
-			try
-			{
-				if ( !m_inResetMode )
-				{
-					new ArtistDao(connection).deleteAll();
-					m_eventBus.post(Events.allArtistsDropped());
-				}
+			connection = DBUtils.connectToDb();
 
-				new AlbumDao(connection).deleteAll();
-				m_eventBus.post(Events.allAlbumsDropped());
-
-			}
-			finally
+			if ( !m_inResetMode )
 			{
-				connection.close();
+				new ArtistDao(connection).deleteAll();
+				m_eventBus.post(Events.allArtistsDropped());
 			}
+
+			new AlbumDao(connection).deleteAll();
+			m_eventBus.post(Events.allAlbumsDropped());
 		}
 		catch ( SQLException e )
 		{
 			throw new CommandException(e);
 		}
+		finally
+		{
+			ConnectionUtils.closeQuietly(connection);
+		}
+
 	}
 
 }

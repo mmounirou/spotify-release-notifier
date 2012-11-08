@@ -13,16 +13,32 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.eventbus.EventBus;
-import com.mmounirou.spotify.AlbumReleaseChecker.Events;
-import com.mmounirou.spotify.Main.PrefectMatch;
+import com.mmounirou.spotify.commons.sql.ConnectionUtils;
 import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
 import com.mmounirou.spotify.datamodel.Artists;
+import com.mmounirou.spotify.listener.Events;
 import com.mmounirou.spoty4j.api.Search;
 import com.mmounirou.spoty4j.core.Artist;
 
 public class ArtistCommand implements Command
 {
+
+	private static class PrefectMatch implements Predicate<Artist>
+	{
+		private final String strName;
+
+		public PrefectMatch(String name)
+		{
+			strName = name;
+		}
+
+		public boolean apply(@Nullable Artist input)
+		{
+			return StringUtils.equalsIgnoreCase(input.getName(), strName);
+		}
+
+	}
 
 	private Iterable<String> m_strArtists;
 	private EventBus m_eventBus;
@@ -49,7 +65,7 @@ public class ArtistCommand implements Command
 		}
 		finally
 		{
-			closeQuietly(connection);
+			ConnectionUtils.closeQuietly(connection);
 		}
 
 	}
@@ -59,21 +75,6 @@ public class ArtistCommand implements Command
 		for ( Artists artists : addedArtist )
 		{
 			m_eventBus.post(Events.newArtist(artists));
-		}
-	}
-
-	private void closeQuietly(Connection connection)
-	{
-		if ( connection != null )
-		{
-			try
-			{
-				connection.close();
-			}
-			catch ( SQLException e )
-			{
-				// Do nothing
-			}
 		}
 	}
 
