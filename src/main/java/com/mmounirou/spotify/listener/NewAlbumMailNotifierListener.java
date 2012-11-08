@@ -12,7 +12,6 @@ import org.apache.commons.mail.HtmlEmail;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
-import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
 import com.mmounirou.spotify.dao.AppConfig;
 import com.mmounirou.spotify.listener.EventListener.DefaultEventListener;
@@ -29,7 +28,7 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 	private static final String SMTP_USERNAME = "email.smtp_username";
 	private static final String SMTP_PASSWORD = "email.smtp_password";
 	private static final String SMTP_TSL = "email.smtp_tls";
-	//private static final String SMTP_SSL = "email.smtp_ssl";
+	// private static final String SMTP_SSL = "email.smtp_ssl";
 
 	private static final String DEFAULT_FROM = "test@localhost";
 	private static final String DEFAULT_TO = "";
@@ -39,42 +38,44 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 	private static final String DEFAULT_SMTP_USERNAME = "";
 	private static final String DEFAULT_SMTP_PASSWORD = "";
 	private static final boolean DEFAULT_SMTP_TSL = false;
-	//private static final boolean DEFAULT_SMTP_SSL = false;
+	// private static final boolean DEFAULT_SMTP_SSL = false;
 
 	private HashMultimap<Artist, Album> albumsByArtists;
 	private RunMode m_runMode;
 
+	
+	
 	@Subscribe
-	public void receiveRunCommandStart(RunCommand event)
+	public void receiveRunCommandStart(RunCommandStartEvent event)
 	{
 		albumsByArtists = HashMultimap.create();
-		m_runMode = event.getRunMode();
+		m_runMode = event.getCommand().getRunMode();
 	}
-	
+
 	@Subscribe
 	public void receiveNewAlbum(NewAlbumEvent event)
 	{
 		Album album = event.getAlbum();
-		assert m_runMode == event.getMode();// The execution is not designed for // execution
+		assert m_runMode == event.getMode();// The execution is not designed for
+											// // execution
 		albumsByArtists.put(album.getArtist(), album);
 	}
 
 	@Subscribe
-	public void receiveRunCommandEnd(RunCommand event)
+	public void receiveRunCommandEnd(RunCommandEndEvent event)
 	{
-		if ( m_runMode == RunMode.NORMAL )
+		if (m_runMode == RunMode.NORMAL && !albumsByArtists.isEmpty())
 		{
 			try
 			{
 				HtmlEmail email = buildEmailSender();
 				email.setHtmlMsg(buildHtmlMessage());
 				email.send();
-			}
-			catch ( Exception e )
+			} catch (Exception e)
 			{
 				// TODO log
 			}
-			
+
 		}
 	}
 
@@ -92,11 +93,11 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 		Set<Artist> artistsSorted = Sets.newTreeSet(comparator);
 		artistsSorted.addAll(albumsByArtists.keySet());
 
-		for ( Artist artist : artistsSorted )
+		for (Artist artist : artistsSorted)
 		{
 			builder.append(String.format("<b><a href=\"%s\">%s</a></b></br>\n<ul\n", artist.getHref(), artist.getName()));
 
-			for ( Album album : albumsByArtists.get(artist) )
+			for (Album album : albumsByArtists.get(artist))
 			{
 				builder.append(String.format("    <li><a href=\"%s\">%s</a></li>\n", album.getHref(), album.getName()));
 			}
@@ -118,7 +119,7 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 		String smtp_username = properties.getString(SMTP_USERNAME, DEFAULT_SMTP_USERNAME);
 		String smtp_password = properties.getString(SMTP_PASSWORD, DEFAULT_SMTP_PASSWORD);
 		boolean smtp_tsl = properties.getBoolean(SMTP_TSL, DEFAULT_SMTP_TSL);
-		//boolean smtp_ssl = properties.getBoolean(SMTP_SSL, DEFAULT_SMTP_SSL);
+		// boolean smtp_ssl = properties.getBoolean(SMTP_SSL, DEFAULT_SMTP_SSL);
 
 		HtmlEmail email = new HtmlEmail();
 		email.setFrom(from, "Spotify Album Notifier");
