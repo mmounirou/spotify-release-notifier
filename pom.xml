@@ -6,7 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
-	  <executable.mainClass>com.mmounirou.spotify.ReleaseNotifier</executable.mainClass> 
+		<executable.mainClass>com.mmounirou.spotify.ReleaseNotifier</executable.mainClass>
 		<executable.dir>.</executable.dir>
 		<executable.java.options />
 	</properties>
@@ -49,16 +49,16 @@
 			<version>1.9</version>
 		</dependency>
 		<dependency>
-			<groupId>com.mmounirou.spotify</groupId>
-			<artifactId>spotify-web-4j</artifactId>
-			<version>1.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.14</version>
 		</dependency>
+		<dependency>
+			<groupId>com.mmounirou.spotify</groupId>
+			<artifactId>spotify-web-4j</artifactId>
+			<version>1.1-SNAPSHOT</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -66,14 +66,19 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
 				<executions>
 					<execution>
 						<id>generate-bat</id>
 						<phase>prepare-package</phase>
 						<configuration>
 							<target>
-								<echo message="java ${executable.java.options} -jar ${project.build.finalName}-dist.jar %*" file="${project.build.directory}/dist/${project.build.finalName}.bat" />
-								<echo message="java ${executable.java.options} -jar ${project.build.finalName}-dist.jar %*" file="${project.build.directory}/dist/${project.build.finalName}.sh" />
+								<echo
+									message="java ${executable.java.options} -jar ${project.build.finalName}-dist.jar %*"
+									file="${project.build.directory}/dist/${project.build.finalName}.bat" />
+								<echo
+									message="java ${executable.java.options} -jar ${project.build.finalName}-dist.jar $@"
+									file="${project.build.directory}/dist/${project.build.finalName}.sh" />
 							</target>
 						</configuration>
 						<goals>
@@ -84,6 +89,7 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<executions>
 					<execution>
 						<id>executable-jar</id>
@@ -109,6 +115,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
+				<version>2.3</version>
 				<executions>
 					<execution>
 						<id>install-dist-jar</id>
@@ -131,6 +138,7 @@
 
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.0</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
@@ -150,6 +158,7 @@
 
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
