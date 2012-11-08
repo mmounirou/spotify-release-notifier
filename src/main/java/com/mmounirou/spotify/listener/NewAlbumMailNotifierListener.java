@@ -3,8 +3,8 @@ package com.mmounirou.spotify.listener;
 import java.util.Comparator;
 import java.util.Set;
 
-import javax.mail.Session;
-
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
@@ -12,34 +12,47 @@ import org.apache.commons.mail.HtmlEmail;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Sets;
 import com.google.common.eventbus.Subscribe;
-import com.mmounirou.spotify.commands.Command;
+import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
+import com.mmounirou.spotify.dao.AppConfig;
 import com.mmounirou.spotify.listener.EventListener.DefaultEventListener;
 import com.mmounirou.spoty4j.core.Album;
 import com.mmounirou.spoty4j.core.Artist;
 
 public class NewAlbumMailNotifierListener extends DefaultEventListener
 {
+	private static final String FROM = "email.from";
+	private static final String TO = "email.to";
+	private static final String SUBJECT = "email.subject";
+	private static final String SMTP_HOST = "email.smtp_host";
+	private static final String SMTP_PORT = "email.smtp_port";
+	private static final String SMTP_USERNAME = "email.smtp_username";
+	private static final String SMTP_PASSWORD = "email.smtp_password";
+	private static final String SMTP_TSL = "email.smtp_tls";
+	//private static final String SMTP_SSL = "email.smtp_ssl";
+
+	private static final String DEFAULT_FROM = "test@localhost";
+	private static final String DEFAULT_TO = "";
+	private static final String DEFAULT_SUBJECT = "Test";
+	private static final String DEFAULT_SMTP_HOST = "localhost";
+	private static final int DEFAULT_SMTP_PORT = 25;
+	private static final String DEFAULT_SMTP_USERNAME = "";
+	private static final String DEFAULT_SMTP_PASSWORD = "";
+	private static final boolean DEFAULT_SMTP_TSL = false;
+	//private static final boolean DEFAULT_SMTP_SSL = false;
+
 	private HashMultimap<Artist, Album> albumsByArtists;
 	private RunMode m_runMode;
-	private Session properties;
 
 	@Subscribe
-	public void receiveCommandStart(Command event)
+	public void receiveRunCommandStart(RunCommand event)
 	{
 		albumsByArtists = HashMultimap.create();
+		m_runMode = event.getRunMode();
 	}
 
 	@Subscribe
-	public void receiveNewAlbum(NewAlbumEvent event)
-	{
-		Album album = event.getAlbum();
-		m_runMode = event.getMode();
-		albumsByArtists.put(album.getArtist(), album);
-	}
-
-	@Subscribe
-	public void receiveCommandEnd(Command event)
+	public void receiveRunCommandEnd(RunCommand event)
 	{
 		if ( m_runMode == RunMode.NORMAL )
 		{
@@ -49,11 +62,20 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 				email.setHtmlMsg(buildHtmlMessage());
 				email.send();
 			}
-			catch ( EmailException e )
+			catch ( Exception e )
 			{
 				// TODO log
 			}
+			
 		}
+	}
+
+	@Subscribe
+	public void receiveNewAlbum(NewAlbumEvent event)
+	{
+		Album album = event.getAlbum();
+		assert m_runMode == event.getMode();// The execution is not designed for // execution
+		albumsByArtists.put(album.getArtist(), album);
 	}
 
 	private String buildHtmlMessage()
@@ -85,33 +107,33 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 		return builder.toString();
 	}
 
-	private HtmlEmail buildEmailSender() throws EmailException
+	private HtmlEmail buildEmailSender() throws EmailException, ConfigurationException
 	{
+		PropertiesConfiguration properties = AppConfig.getAppProperties();
+		String from = properties.getString(FROM, DEFAULT_FROM);
+		String to = properties.getString(TO, DEFAULT_TO);
+		String subject = properties.getString(SUBJECT, DEFAULT_SUBJECT);
+		String smtp_host = properties.getString(SMTP_HOST, DEFAULT_SMTP_HOST);
+		int smtp_port = properties.getInt(SMTP_PORT, DEFAULT_SMTP_PORT);
+		String smtp_username = properties.getString(SMTP_USERNAME, DEFAULT_SMTP_USERNAME);
+		String smtp_password = properties.getString(SMTP_PASSWORD, DEFAULT_SMTP_PASSWORD);
+		boolean smtp_tsl = properties.getBoolean(SMTP_TSL, DEFAULT_SMTP_TSL);
+		//boolean smtp_ssl = properties.getBoolean(SMTP_SSL, DEFAULT_SMTP_SSL);
 
 		HtmlEmail email = new HtmlEmail();
-		String authpwd = properties.getProperty("sender.password");
-		String fromMail = properties.getProperty("sender.email");
-		String toName = properties.getProperty("receiver.email");
-
-		email.setSmtpPort(587);
-		email.setAuthenticator(new DefaultAuthenticator(fromMail, authpwd));
-		email.setDebug(true);
-		email.setHostName("smtp.gmail.com");
-		email.setFrom(fromMail, "Spotify Album Notifier");
-		email.addTo(toName);
-		email.setTLS(true);
-
-		email.getMailSession().getProperties().put("mail.smtps.auth", "true");
-		email.getMailSession().getProperties().put("mail.debug", "true");
-		email.getMailSession().getProperties().put("mail.smtps.port", "587");
-		email.getMailSession().getProperties().put("mail.smtps.socketFactory.port", "587");
-		email.getMailSession().getProperties().put("mail.smtps.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-		email.getMailSession().getProperties().put("mail.smtps.socketFactory.fallback", "false");
-		email.getMailSession().getProperties().put("mail.smtp.starttls.enable", "true");
-		email.setSubject("[Spotify Release] New Released Albums");
-
+		email.setFrom(from, "Spotify Album Notifier");
+		email.addTo(to);
+		email.setSubject(subject);
+		email.setHostName(smtp_host);
+		email.setSmtpPort(smtp_port);
+		email.setAuthenticator(new DefaultAuthenticator(smtp_username, smtp_password));
+		email.setTLS(smtp_tsl);
 		return email;
 
 	}
 
+	public static void main(String[] args) throws ConfigurationException, EmailException
+	{
+
+	}
 }

@@ -4,6 +4,11 @@ import java.io.File;
 
 import javax.swing.filechooser.FileSystemView;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+import com.mmounirou.spotify.commons.util.AutoUpdatedPropertiesConfiguration;
+
 public final class AppConfig
 {
 	private AppConfig()
@@ -22,5 +27,19 @@ public final class AppConfig
 		appDirectoryFile.mkdirs();
 		return appDirectoryFile;
 	}
+
+	private static File getAppPropertiesFile()
+	{
+		return new File(getAppDirectory(),"app.properties");
+	}
+
+	
+	public static PropertiesConfiguration getAppProperties() throws ConfigurationException
+	{
+		PropertiesConfiguration configuration = new AutoUpdatedPropertiesConfiguration(getAppPropertiesFile());
+		configuration.setAutoSave(true);
+		return configuration;
+	}
+
 
 }
