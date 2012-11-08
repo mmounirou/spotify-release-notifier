@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.common.eventbus.EventBus;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
@@ -78,6 +79,16 @@ public class ArtistCommand implements Command
 				return input.getHref();
 			}
 		};
+		
+		Function<Artists, String> toUri = new Function<Artists, String>()
+		{
+
+			@Nullable
+			public String apply(@Nullable Artists input)
+			{
+				return input.getUri();
+			}
+		};
 
 		Connection connection = null;
 		try
@@ -87,12 +98,14 @@ public class ArtistCommand implements Command
 			Map<String, Artist> spotifyArtistByHref = Maps.uniqueIndex(fetchSpotifyArtists(m_strArtists), toHref);
 
 			final Collection<Artists> addedArtist = new ArtistDao(connection).addArtistIfNotExist(FluentIterable.from(spotifyArtistByHref.values()).transform(toDbArtists).toImmutableList());
+			final ImmutableList<String> addedArtistUri = FluentIterable.from(addedArtist).transform(toUri).toImmutableList();
+			
 			Predicate<Artist> newAddedArtistPredicate = new Predicate<Artist>()
 			{
 
 				public boolean apply(@Nullable Artist input)
 				{
-					return addedArtist.contains(input.getHref());
+					return addedArtistUri.contains(input.getHref());
 				}
 			};
 

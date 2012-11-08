@@ -42,7 +42,6 @@ public class ArtistDao
 	{
 		if ( !artists.isEmpty() )
 		{
-			long begin = System.currentTimeMillis();
 			QArtists tartists = QArtists.tArtists;
 			SQLInsertClause insertClause = new SQLInsertClause(m_connection, new SQLiteTemplates(), tartists);
 			for ( Artists artist : artists )
@@ -54,9 +53,6 @@ public class ArtistDao
 				//@formatter:on
 			}
 			insertClause.execute();
-
-			long end = System.currentTimeMillis();
-			System.out.println("Insert artists" + (begin - end) / 1000);
 		}
 
 	}
