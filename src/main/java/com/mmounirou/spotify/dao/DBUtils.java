@@ -68,4 +68,9 @@ public class DBUtils
 		return connection;
 	}
 
+	public static Connection connectToDb() throws SQLException
+	{
+		return DriverManager.getConnection(String.format("jdbc:sqlite:%s", AppConfig.getDbFile().getAbsolutePath()));
+	}
+
 }

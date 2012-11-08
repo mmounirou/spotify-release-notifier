@@ -16,6 +16,7 @@ import com.mmounirou.spotify.datamodel.query.QAlbums;
 import com.mmounirou.spoty4j.core.Album;
 import com.mysema.query.sql.SQLQueryImpl;
 import com.mysema.query.sql.SQLiteTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class AlbumDao
@@ -74,6 +75,11 @@ public class AlbumDao
 		Collection<Album> insertedAlbums = albumById.values();
 		addAlbums(insertedAlbums);
 		return insertedAlbums;
+	}
+
+	public void deleteAll()
+	{
+		new SQLDeleteClause(m_connection, new SQLiteTemplates(), QAlbums.tAlbums).execute();
 	}
 
 }

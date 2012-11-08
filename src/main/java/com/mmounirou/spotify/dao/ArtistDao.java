@@ -17,6 +17,7 @@ import com.mmounirou.spotify.datamodel.Artists;
 import com.mmounirou.spotify.datamodel.query.QArtists;
 import com.mysema.query.sql.SQLQueryImpl;
 import com.mysema.query.sql.SQLiteTemplates;
+import com.mysema.query.sql.dml.SQLDeleteClause;
 import com.mysema.query.sql.dml.SQLInsertClause;
 
 public class ArtistDao
@@ -39,12 +40,12 @@ public class ArtistDao
 
 	public void addArtists(Collection<Artists> artists)
 	{
-		if (!artists.isEmpty())
+		if ( !artists.isEmpty() )
 		{
 			long begin = System.currentTimeMillis();
 			QArtists tartists = QArtists.tArtists;
 			SQLInsertClause insertClause = new SQLInsertClause(m_connection, new SQLiteTemplates(), tartists);
-			for (Artists artist : artists)
+			for ( Artists artist : artists )
 			{
 				//@formatter:off
 				insertClause.set(tartists.uri, artist.getUri())
@@ -88,7 +89,7 @@ public class ArtistDao
 	public Collection<Artists> addArtistIfNotExist(Collection<Artists> artists)
 	{
 		Map<String, Artists> artistsById = Maps.newHashMap();
-		for (Artists artist : artists)
+		for ( Artists artist : artists )
 		{
 			artistsById.put(artist.getUri(), artist);
 		}
@@ -99,6 +100,11 @@ public class ArtistDao
 		addArtists(values);
 
 		return values;
+	}
+
+	public void deleteAll()
+	{
+		new SQLDeleteClause(m_connection, new SQLiteTemplates(), QArtists.tArtists).execute();
 	}
 
 }

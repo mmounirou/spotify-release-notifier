@@ -2,6 +2,7 @@ package com.mmounirou.spotify.commands;
 
 public interface Command
 {
+	@SuppressWarnings("serial")
 	public class CommandException extends Exception
 	{
 
