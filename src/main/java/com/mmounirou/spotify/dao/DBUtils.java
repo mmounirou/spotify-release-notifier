@@ -8,6 +8,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.swing.filechooser.FileSystemView;
+
 import com.google.common.io.CharStreams;
 import com.mmounirou.spotify.Sample;
 
@@ -30,7 +32,10 @@ public class DBUtils
 
 		Connection connection = null;
 
-		File dbFile = new File("spotify.db");
+		File appDirectoryFile = new File(FileSystemView.getFileSystemView().getHomeDirectory(),".spotify-release");
+		appDirectoryFile.mkdirs();
+		File dbFile = new File(appDirectoryFile,"spotify-release.db");
+		
 		if ( dropDb )
 		{
 			dbFile.delete();
