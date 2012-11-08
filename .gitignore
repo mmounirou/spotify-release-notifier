@@ -16,3 +16,4 @@ dist
 .settings/
 spotify.db
 spotify.db-journal
+*.log

@@ -40,8 +40,8 @@ public class ReleaseNotifier
 	private static final Option DROP        = OptionBuilder.withLongOpt("drop").withDescription("DANGEROUS. Obliterates the database artists included").create();
 	private static final Option TEST        = OptionBuilder.withLongOpt("test").withDescription(" Verbose what would happen on normal execution").create();			
 //	private static final Option CRON        = OptionBuilder.withLongOpt("cron").withDescription("Disables stdout and stderr output, log file used.Reduces logging level slightly.").create();
-	private static final Option ARTIST      = OptionBuilder.withLongOpt("artist").withDescription("Insert new artists separated by comma").hasArg().withType(String.class).create();
-	private static final Option ARTIST_FILE = OptionBuilder.withLongOpt("file-artist").withDescription("Insert new artists contained in input file.one artist by line").hasArg().withType(File.class).create();
+	private static final Option ARTIST      = OptionBuilder.withLongOpt("artists").withDescription("Insert new artists separated by comma").hasArg().withType(String.class).create();
+	private static final Option ARTIST_FILE = OptionBuilder.withLongOpt("artists-file").withDescription("Insert new artists contained in input file.one artist by line").hasArg().withType(File.class).create();
 	private static final Option RUN         = OptionBuilder.withLongOpt("run").withDescription("Start normal execution").create();
 	private static final Option HELP        = OptionBuilder.withLongOpt("help").withDescription("print usage information").create();
 
