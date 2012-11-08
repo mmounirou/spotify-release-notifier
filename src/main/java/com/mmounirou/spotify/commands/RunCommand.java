@@ -26,19 +26,14 @@ import com.mmounirou.spoty4j.core.Artist;
 public class RunCommand implements Command
 {
 
-	private EventBus m_eventBus;
-	private RunMode m_runMode;
+	private final EventBus m_eventBus;
+	private final RunMode m_runMode;
 
 	public enum RunMode
 	{
 		TEST,
 		LEARN,
 		NORMAL;
-	}
-
-	public RunCommand(EventBus eventBus)
-	{
-		this(eventBus, RunMode.NORMAL);
 	}
 
 	public RunCommand(EventBus eventBus, RunMode runMode)
@@ -88,7 +83,7 @@ public class RunCommand implements Command
 
 			Collection<Album> newAlbums = albumById.values();
 
-			if ( m_runMode == RunMode.LEARN || m_runMode == RunMode.NORMAL )
+			if ( getRunMode() == RunMode.LEARN || getRunMode() == RunMode.NORMAL )
 			{
 				albumDao.addAlbums(FluentIterable.from(newAlbums).transform(toDbAlbum).toImmutableList());
 			}
@@ -111,7 +106,7 @@ public class RunCommand implements Command
 	{
 		for ( Album albums : newAlbums )
 		{
-			m_eventBus.post(NewAlbumEvent.of(albums, m_runMode));
+			m_eventBus.post(NewAlbumEvent.of(albums, getRunMode()));
 		}
 	}
 
@@ -141,5 +136,10 @@ public class RunCommand implements Command
 
 		return FluentIterable.from(artists).transform(fetchArtist).transformAndConcat(getAlbums);
 
+	}
+
+	public RunMode getRunMode()
+	{
+		return m_runMode;
 	}
 }
