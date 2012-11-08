@@ -67,6 +67,18 @@ public class AlbumReleaseChecker
 			return null;
 		}
 
+		public static Object allArtistsDropped()
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public static Object allAlbumsDropped()
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
 
 	private EventBus eventBus;

@@ -66,12 +66,12 @@ public class ReleaseNotifier
 			CommandLine commandLine = new PosixParser().parse(OPTIONS, args);
 			if ( commandLine.hasOption(DROP.getLongOpt()) )
 			{
-				Command dropCommand = new DropCommand();
+				Command dropCommand = new DropCommand(eventBus);
 				dropCommand.run();
 			}
 			if ( commandLine.hasOption(RESET.getLongOpt()) )
 			{
-				Command command = new ResetCommand();
+				Command command = new ResetCommand(eventBus);
 				command.run();
 			}
 			if ( commandLine.hasOption(ARTIST.getLongOpt()) )
