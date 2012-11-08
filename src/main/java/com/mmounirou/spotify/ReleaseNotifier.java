@@ -42,7 +42,7 @@ public class ReleaseNotifier
 //	private static final Option CRON        = OptionBuilder.withLongOpt("cron").withDescription("Disables stdout and stderr output, log file used.Reduces logging level slightly.").create();
 	private static final Option ARTIST      = OptionBuilder.withLongOpt("artist").withDescription("Insert new artists separated by comma").hasArg().withType(String.class).create();
 	private static final Option ARTIST_FILE = OptionBuilder.withLongOpt("file-artist").withDescription("Insert new artists contained in input file.one artist by line").hasArg().withType(File.class).create();
-	private static final Option RUN         = OptionBuilder.withLongOpt("start").withDescription("Start normal execution").create();
+	private static final Option RUN         = OptionBuilder.withLongOpt("run").withDescription("Start normal execution").create();
 	private static final Option HELP        = OptionBuilder.withLongOpt("help").withDescription("print usage information").create();
 
 	//@formatter:on
@@ -67,73 +67,70 @@ public class ReleaseNotifier
 	{
 		EventBus eventBus = new EventBus(ReleaseNotifier.class.getName());
 		initListeners(eventBus);
-		
+
 		try
 		{
 			eventBus.post(ApplicationStartEvent.of());
-			
+
 			DBUtils.initDataBase();
-			
+
 			CommandLine commandLine = new PosixParser().parse(OPTIONS, args);
-			if ( commandLine.hasOption(DROP.getLongOpt()) )
+			if (commandLine.hasOption(DROP.getLongOpt()))
 			{
 				Command dropCommand = new DropCommand(eventBus);
 				dropCommand.run();
 			}
-			if ( commandLine.hasOption(RESET.getLongOpt()) )
+			if (commandLine.hasOption(RESET.getLongOpt()))
 			{
-				Command command = new DropCommand(eventBus,true);
+				Command command = new DropCommand(eventBus, true);
 				command.run();
 			}
-			if ( commandLine.hasOption(ARTIST.getLongOpt()) )
+			if (commandLine.hasOption(ARTIST.getLongOpt()))
 			{
 				Iterable<String> strArtists = Splitter.on(",").omitEmptyStrings().trimResults().split(commandLine.getOptionValue(ARTIST.getLongOpt()));
-				Command artistCommand = new ArtistCommand(eventBus,strArtists);
+				Command artistCommand = new ArtistCommand(eventBus, strArtists);
 				artistCommand.run();
 			}
-			if ( commandLine.hasOption(ARTIST_FILE.getLongOpt()) )
+			if (commandLine.hasOption(ARTIST_FILE.getLongOpt()))
 			{
 				File artistFile = (File) commandLine.getParsedOptionValue(ARTIST_FILE.getLongOpt());
 				List<String> strArtists = Files.readLines(artistFile, Charsets.UTF_8);
-				Command artistCommand = new ArtistCommand(eventBus,strArtists);
+				Command artistCommand = new ArtistCommand(eventBus, strArtists);
 				artistCommand.run();
 			}
-			if ( commandLine.hasOption(TEST.getLongOpt()) )
+			if (commandLine.hasOption(TEST.getLongOpt()))
 			{
-				Command command = new RunCommand(eventBus,RunMode.TEST);
+				Command command = new RunCommand(eventBus, RunMode.TEST);
 				command.run();
 			}
-			if ( commandLine.hasOption(LEARN.getLongOpt()) )
+			if (commandLine.hasOption(LEARN.getLongOpt()))
 			{
-				Command command = new RunCommand(eventBus,RunMode.LEARN);
+				Command command = new RunCommand(eventBus, RunMode.LEARN);
 				command.run();
 			}
-			if ( commandLine.hasOption(LIST.getLongOpt()) )
+			if (commandLine.hasOption(LIST.getLongOpt()))
 			{
 				Command command = new ListCommand(eventBus);
 				command.run();
 			}
-			if ( commandLine.hasOption(HELP.getLongOpt()) )
+			if (commandLine.hasOption(HELP.getLongOpt()))
 			{
 				usage();
 			}
-			if ( args.length == 0 || commandLine.hasOption(RUN.getLongOpt()) )
+			if (args.length == 0 || commandLine.hasOption(RUN.getLongOpt()))
 			{
-				Command command = new RunCommand(eventBus,RunMode.NORMAL);
+				Command command = new RunCommand(eventBus, RunMode.NORMAL);
 				command.run();
 			}
 
-		}
-		catch ( ParseException e )
+		} catch (ParseException e)
 		{
 			APP_LOGGER.error(e.getMessage());
 			usage();
-		}
-		catch ( Throwable e )
+		} catch (Throwable e)
 		{
-			APP_LOGGER.error(e.getMessage(),e);
-		}
-		finally
+			APP_LOGGER.error(e.getMessage(), e);
+		} finally
 		{
 			eventBus.post(ApplicationEndEvent.of());
 		}
@@ -142,7 +139,7 @@ public class ReleaseNotifier
 	private static void initListeners(EventBus eventBus)
 	{
 		eventBus.register(new LoggerListener(APP_LOGGER));
-		eventBus.register(new NewAlbumMailNotifierListener());
+		eventBus.register(new NewAlbumMailNotifierListener(APP_LOGGER));
 	}
 
 	private static void usage()

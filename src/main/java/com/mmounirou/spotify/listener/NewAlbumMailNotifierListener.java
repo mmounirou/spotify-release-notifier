@@ -8,6 +8,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
+import org.apache.log4j.Logger;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Sets;
@@ -42,9 +43,13 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 
 	private HashMultimap<Artist, Album> albumsByArtists;
 	private RunMode m_runMode;
+	private Logger logger;
 
-	
-	
+	public NewAlbumMailNotifierListener(Logger logger)
+	{
+		this.logger = logger;
+	}
+
 	@Subscribe
 	public void receiveRunCommandStart(RunCommandStartEvent event)
 	{
@@ -68,12 +73,16 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 		{
 			try
 			{
-				HtmlEmail email = buildEmailSender();
+				PropertiesConfiguration properties = AppConfig.getAppProperties();
+
+				logger.info(String.format("sending email to %s ...", properties.getString(TO, DEFAULT_TO)));
+				HtmlEmail email = buildEmailSender(properties);
 				email.setHtmlMsg(buildHtmlMessage());
 				email.send();
+				logger.info("email sended");
 			} catch (Exception e)
 			{
-				// TODO log
+				logger.error(String.format("failed to send mail.please check your config (%s)", AppConfig.getAppPropertiesFile()), e);
 			}
 
 		}
@@ -108,9 +117,8 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 		return builder.toString();
 	}
 
-	private HtmlEmail buildEmailSender() throws EmailException, ConfigurationException
+	private HtmlEmail buildEmailSender(PropertiesConfiguration properties) throws EmailException, ConfigurationException
 	{
-		PropertiesConfiguration properties = AppConfig.getAppProperties();
 		String from = properties.getString(FROM, DEFAULT_FROM);
 		String to = properties.getString(TO, DEFAULT_TO);
 		String subject = properties.getString(SUBJECT, DEFAULT_SUBJECT);
@@ -130,11 +138,6 @@ public class NewAlbumMailNotifierListener extends DefaultEventListener
 		email.setAuthenticator(new DefaultAuthenticator(smtp_username, smtp_password));
 		email.setTLS(smtp_tsl);
 		return email;
-
-	}
-
-	public static void main(String[] args) throws ConfigurationException, EmailException
-	{
 
 	}
 }

@@ -28,7 +28,7 @@ public final class AppConfig
 		return appDirectoryFile;
 	}
 
-	private static File getAppPropertiesFile()
+	public static File getAppPropertiesFile()
 	{
 		return new File(getAppDirectory(),"app.properties");
 	}
