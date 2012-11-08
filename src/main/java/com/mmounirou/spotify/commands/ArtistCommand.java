@@ -3,6 +3,7 @@ package com.mmounirou.spotify.commands;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -11,13 +12,14 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.eventbus.EventBus;
+import com.mmounirou.spotify.commands.RunCommand.RunMode;
 import com.mmounirou.spotify.commons.sql.ConnectionUtils;
 import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
 import com.mmounirou.spotify.datamodel.Artists;
-import com.mmounirou.spotify.listener.Events;
+import com.mmounirou.spotify.listener.EventListener.NewArtistEvent;
 import com.mmounirou.spoty4j.api.Search;
 import com.mmounirou.spoty4j.core.Artist;
 
@@ -51,13 +53,46 @@ public class ArtistCommand implements Command
 
 	public void run() throws CommandException
 	{
+		Function<Artist, Artists> toDbArtists = new Function<Artist, Artists>()
+		{
+			@Nullable
+			public Artists apply(@Nullable Artist input)
+			{
+				Artists artists = new Artists();
+				artists.setName(input.getName());
+				artists.setUri(input.getHref());
+				return artists;
+			}
+		};
+
+		Function<Artist, String> toHref = new Function<Artist, String>()
+		{
+
+			@Nullable
+			public String apply(@Nullable Artist input)
+			{
+				return input.getHref();
+			}
+		};
 
 		Connection connection = null;
 		try
 		{
+
 			connection = DBUtils.connectToDb();
-			Collection<Artists> addedArtist = new ArtistDao(connection).addArtistIfNotExist(Lists.newArrayList(fetchSpotifyArtists(m_strArtists)));
-			fireNewArtists(addedArtist);
+			Map<String, Artist> spotifyArtistByHref = Maps.uniqueIndex(fetchSpotifyArtists(m_strArtists), toHref);
+
+			final Collection<Artists> addedArtist = new ArtistDao(connection).addArtistIfNotExist(FluentIterable.from(spotifyArtistByHref.values()).transform(toDbArtists).toImmutableList());
+			Predicate<Artist> newAddedArtistPredicate = new Predicate<Artist>()
+			{
+
+				public boolean apply(@Nullable Artist input)
+				{
+					return addedArtist.contains(input.getHref());
+				}
+			};
+
+			fireNewArtists(Maps.filterValues(spotifyArtistByHref, newAddedArtistPredicate).values());
 		}
 		catch ( SQLException e )
 		{
@@ -70,15 +105,15 @@ public class ArtistCommand implements Command
 
 	}
 
-	private void fireNewArtists(Collection<Artists> addedArtist)
+	private void fireNewArtists(Collection<Artist> addedArtist)
 	{
-		for ( Artists artists : addedArtist )
+		for ( Artist artists : addedArtist )
 		{
-			m_eventBus.post(Events.newArtist(artists));
+			m_eventBus.post(NewArtistEvent.of(artists, RunMode.NORMAL));
 		}
 	}
 
-	private Iterable<Artists> fetchSpotifyArtists(Iterable<String> strArtists)
+	private FluentIterable<Artist> fetchSpotifyArtists(Iterable<String> strArtists)
 	{
 		Function<String, Iterable<Artist>> querySpotifyArtist = new Function<String, Iterable<Artist>>()
 		{
@@ -100,24 +135,9 @@ public class ArtistCommand implements Command
 		};
 
 		//@formatter:off
-		Function<Artist, Artists> toDbArtists = new Function<Artist, Artists>()
-		{
-			@Nullable
-			public Artists apply(@Nullable Artist input)
-			{
-				Artists artists = new Artists();
-				artists.setName(input.getName());
-				artists.setUri(input.getHref());
-				return artists;
-			}
-		};
-		
-		return FluentIterable.from(FluentIterable.from(strArtists)
+		return FluentIterable.from(strArtists)
 					  .filter(notBlankName)
-					  .transformAndConcat(querySpotifyArtist)
-					  .toImmutableSet())
-					  .transform(toDbArtists);
+					  .transformAndConcat(querySpotifyArtist);
 	   //@formatter:on		
 	}
-
 }

@@ -8,7 +8,8 @@ import com.mmounirou.spotify.commons.sql.ConnectionUtils;
 import com.mmounirou.spotify.dao.AlbumDao;
 import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
-import com.mmounirou.spotify.listener.Events;
+import com.mmounirou.spotify.listener.EventListener.AllAlbumsDroppedEvent;
+import com.mmounirou.spotify.listener.EventListener.AllArtistsDroppedEvent;
 
 public class DropCommand implements Command
 {
@@ -37,11 +38,11 @@ public class DropCommand implements Command
 			if ( !m_inResetMode )
 			{
 				new ArtistDao(connection).deleteAll();
-				m_eventBus.post(Events.allArtistsDropped());
+				m_eventBus.post(AllArtistsDroppedEvent.of());
 			}
 
 			new AlbumDao(connection).deleteAll();
-			m_eventBus.post(Events.allAlbumsDropped());
+			m_eventBus.post(AllAlbumsDroppedEvent.of());
 		}
 		catch ( SQLException e )
 		{

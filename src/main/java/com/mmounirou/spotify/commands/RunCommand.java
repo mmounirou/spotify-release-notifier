@@ -19,7 +19,7 @@ import com.mmounirou.spotify.dao.ArtistDao;
 import com.mmounirou.spotify.dao.DBUtils;
 import com.mmounirou.spotify.datamodel.Albums;
 import com.mmounirou.spotify.datamodel.Artists;
-import com.mmounirou.spotify.listener.Events;
+import com.mmounirou.spotify.listener.EventListener.NewAlbumEvent;
 import com.mmounirou.spoty4j.core.Album;
 import com.mmounirou.spoty4j.core.Artist;
 
@@ -50,13 +50,26 @@ public class RunCommand implements Command
 	public void run() throws CommandException
 	{
 
-		Function<Albums, String> toHref = new Function<Albums, String>()
+		Function<Album, Albums> toDbAlbum = new Function<Album, Albums>()
 		{
 
 			@Nullable
-			public String apply(@Nullable Albums input)
+			public Albums apply(@Nullable Album input)
 			{
-				return input.getUri();
+				Albums albums = new Albums();
+				albums.setName(input.getName());
+				albums.setUri(input.getHref());
+				return albums;
+			}
+		};
+
+		Function<Album, String> toHref = new Function<Album, String>()
+		{
+
+			@Nullable
+			public String apply(@Nullable Album input)
+			{
+				return input.getHref();
 			}
 		};
 
@@ -67,17 +80,17 @@ public class RunCommand implements Command
 			ArtistDao artistDao = new ArtistDao(connection);
 			AlbumDao albumDao = new AlbumDao(connection);
 
-			Map<String, Albums> albumsById = Maps.uniqueIndex(fetchAlbums(artistDao.all()), toHref);
-			Set<String> existingAlbumsHref = albumDao.exist(ImmutableList.copyOf(albumsById.keySet())).toImmutableSet();
+			Map<String, Album> albumById = Maps.uniqueIndex(fetchAlbums(artistDao.all()), toHref);
+			Set<String> existingAlbumsHref = albumDao.exist(ImmutableList.copyOf(albumById.keySet())).toImmutableSet();
 
 			// in the map remove all existing albums
-			albumsById.keySet().removeAll(existingAlbumsHref);
+			albumById.keySet().removeAll(existingAlbumsHref);
 
-			Collection<Albums> newAlbums = albumsById.values();
+			Collection<Album> newAlbums = albumById.values();
 
 			if ( m_runMode == RunMode.LEARN || m_runMode == RunMode.NORMAL )
 			{
-				albumDao.addAlbums(newAlbums);
+				albumDao.addAlbums(FluentIterable.from(newAlbums).transform(toDbAlbum).toImmutableList());
 			}
 
 			fireNewAlbum(newAlbums);
@@ -94,15 +107,15 @@ public class RunCommand implements Command
 
 	}
 
-	private void fireNewAlbum(Iterable<Albums> newAlbums)
+	private void fireNewAlbum(Iterable<Album> newAlbums)
 	{
-		for ( Albums albums : newAlbums )
+		for ( Album albums : newAlbums )
 		{
-			m_eventBus.post(Events.newAlbum(albums, m_runMode));
+			m_eventBus.post(NewAlbumEvent.of(albums, m_runMode));
 		}
 	}
 
-	private FluentIterable<Albums> fetchAlbums(Iterable<Artists> artists) throws CommandException
+	private FluentIterable<Album> fetchAlbums(Iterable<Artists> artists) throws CommandException
 	{
 		Function<Artists, Artist> fetchArtist = new Function<Artists, Artist>()
 		{
@@ -126,25 +139,7 @@ public class RunCommand implements Command
 			}
 		};
 
-		Function<Album, Albums> toDbAlbum = new Function<Album, Albums>()
-		{
-
-			@Nullable
-			public Albums apply(@Nullable Album input)
-			{
-				Albums albums = new Albums();
-				albums.setName(input.getName());
-				albums.setUri(input.getHref());
-				return albums;
-			}
-		};
-
-		//@formatter:off
-		return FluentIterable.from(FluentIterable.from(artists)
-										  .transform(fetchArtist)
-										  .transformAndConcat(getAlbums)
-										  .toImmutableSet())
-							  .transform(toDbAlbum);
+		return FluentIterable.from(artists).transform(fetchArtist).transformAndConcat(getAlbums);
 
 	}
 }
