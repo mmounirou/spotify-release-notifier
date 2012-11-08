@@ -19,6 +19,7 @@ import com.google.common.io.Files;
 import com.mmounirou.spotify.commands.ArtistCommand;
 import com.mmounirou.spotify.commands.Command;
 import com.mmounirou.spotify.commands.DropCommand;
+import com.mmounirou.spotify.commands.ListCommand;
 import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
 import com.mmounirou.spotify.dao.DBUtils;
@@ -34,6 +35,7 @@ public class ReleaseNotifier
 
 	//@formatter:off
 	private static final Option LEARN       = OptionBuilder.withLongOpt("learn").withDescription("Matches are not notified but will be skipped in the future").create();
+	private static final Option LIST        = OptionBuilder.withLongOpt("list").withDescription("List all artists of the database").create();
 	private static final Option RESET       = OptionBuilder.withLongOpt("reset").withDescription("DANGEROUS. Obliterates the database except artists and runs with learn in order to to regain useful state").create();
 	private static final Option DROP        = OptionBuilder.withLongOpt("drop").withDescription("DANGEROUS. Obliterates the database artists included").create();
 	private static final Option TEST        = OptionBuilder.withLongOpt("test").withDescription(" Verbose what would happen on normal execution").create();			
@@ -51,6 +53,7 @@ public class ReleaseNotifier
 		//@formatter:off
 		return new Options().addOption(DROP)
 							.addOption(RESET)
+							.addOption(LIST)
 							.addOption(ARTIST)
 							.addOption(ARTIST_FILE)
 							.addOption(TEST)
@@ -103,6 +106,11 @@ public class ReleaseNotifier
 			if ( commandLine.hasOption(LEARN.getLongOpt()) )
 			{
 				Command command = new RunCommand(eventBus,RunMode.LEARN);
+				command.run();
+			}
+			if ( commandLine.hasOption(LIST.getLongOpt()) )
+			{
+				Command command = new ListCommand(eventBus);
 				command.run();
 			}
 			if ( commandLine.hasOption(HELP.getLongOpt()) )

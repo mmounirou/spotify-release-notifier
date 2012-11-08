@@ -36,7 +36,8 @@ public class RunCommand implements Command
 	{
 		TEST,
 		LEARN,
-		NORMAL;
+		NORMAL, 
+		LIST;
 	}
 
 	public RunCommand(EventBus eventBus, RunMode runMode)

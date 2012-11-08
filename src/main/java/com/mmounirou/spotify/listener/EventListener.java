@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe;
 import com.mmounirou.spotify.commands.ArtistCommand;
 import com.mmounirou.spotify.commands.Command;
 import com.mmounirou.spotify.commands.DropCommand;
+import com.mmounirou.spotify.commands.ListCommand;
 import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
 import com.mmounirou.spoty4j.core.Album;
@@ -234,6 +235,47 @@ public interface EventListener
 			return command;
 		}
 	}
+	
+	public static class ListCommandStartEvent
+	{
+		private final ListCommand command;
+
+		private ListCommandStartEvent(ListCommand command)
+		{
+			this.command = command;
+
+		}
+
+		public static ListCommandStartEvent of(ListCommand command)
+		{
+			return new ListCommandStartEvent(command);
+		}
+
+		public ListCommand getCommand()
+		{
+			return command;
+		}
+	}
+
+	public static class ListCommandEndEvent
+	{
+		private final ListCommand command;
+
+		private ListCommandEndEvent(ListCommand command)
+		{
+			this.command = command;
+		}
+
+		public static ListCommandEndEvent of(ListCommand command)
+		{
+			return new ListCommandEndEvent(command);
+		}
+
+		public ListCommand getCommand()
+		{
+			return command;
+		}
+	}
 
 	public static class DefaultEventListener implements EventListener
 	{
@@ -314,6 +356,18 @@ public interface EventListener
 			receiveCommandEnd(event.getCommand());
 		}
 
+		@Subscribe
+		public void receiveListCommandStart(ListCommandStartEvent event)
+		{
+			receiveCommandEnd(event.getCommand());
+		}
+
+		@Subscribe
+		public void receiveListCommandEnd(ListCommandEndEvent event)
+		{
+			receiveCommandEnd(event.getCommand());
+		}
+
 	}
 
 	@Subscribe
@@ -351,4 +405,10 @@ public interface EventListener
 
 	@Subscribe
 	public void receiveDropCommandEnd(DropCommandEndEvent event);
+	
+	@Subscribe
+	public void receiveListCommandStart(ListCommandStartEvent event);
+
+	@Subscribe
+	public void receiveListCommandEnd(ListCommandEndEvent event);
 }
