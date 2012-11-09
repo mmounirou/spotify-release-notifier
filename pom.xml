@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mmounirou.spotify</groupId>
 	<artifactId>spotify-release-notifier</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
 
 	<name>spotify-release-notifier</name>
 	<url>https://github.com/mmounirou/spotify-release-notifier</url>
@@ -129,11 +128,8 @@
 						<phase>prepare-package</phase>
 						<configuration>
 							<target>
-								<echo message="java -jar %~dp0\${project.build.finalName}-dist.jar %*"
-									file="${project.build.directory}/dist/${project.build.finalName}.bat" />
-								<echo
-									message="java -jar $(dirname $(readlink -f $0))/${project.build.finalName}-dist.jar $@"
-									file="${project.build.directory}/dist/${project.build.finalName}.sh" />
+								<echo message="java -jar %~dp0\${project.build.finalName}-dist.jar %*" file="${project.build.directory}/dist/${project.build.finalName}.bat" />
+								<echo message="java -jar $(dirname $(readlink -f $0))/${project.build.finalName}-dist.jar $@" file="${project.build.directory}/dist/${project.build.finalName}.sh" />
 							</target>
 						</configuration>
 						<goals>
