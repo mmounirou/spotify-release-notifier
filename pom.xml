@@ -112,8 +112,8 @@
 						<phase>prepare-package</phase>
 						<configuration>
 							<target>
-								<echo message="java -jar ${project.build.finalName}-dist.jar %*" file="${project.build.directory}/dist/${project.build.finalName}.bat" />
-								<echo message="java -jar ${project.build.finalName}-dist.jar $@" file="${project.build.directory}/dist/${project.build.finalName}.sh" />
+								<echo message="java -jar %~dp0\${project.build.finalName}-dist.jar %*" file="${project.build.directory}/dist/${project.build.finalName}.bat" />
+								<echo message="java -jar $(dirname $(readlink -f $0))/spotify-release-notifier-1.0-dist.jar $@" file="${project.build.directory}/dist/${project.build.finalName}.sh" />
 							</target>
 						</configuration>
 						<goals>
