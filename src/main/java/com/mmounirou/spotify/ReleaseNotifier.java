@@ -88,24 +88,24 @@ public class ReleaseNotifier
 			if (commandLine.hasOption(ARTIST.getLongOpt()))
 			{
 				Iterable<String> strArtists = Splitter.on(",").omitEmptyStrings().trimResults().split(commandLine.getOptionValue(ARTIST.getLongOpt()));
-				Command artistCommand = new ArtistCommand(eventBus, strArtists);
+				Command artistCommand = new ArtistCommand(eventBus, strArtists,APP_LOGGER);
 				artistCommand.run();
 			}
 			if (commandLine.hasOption(ARTIST_FILE.getLongOpt()))
 			{
 				File artistFile = (File) commandLine.getParsedOptionValue(ARTIST_FILE.getLongOpt());
 				List<String> strArtists = Files.readLines(artistFile, Charsets.UTF_8);
-				Command artistCommand = new ArtistCommand(eventBus, strArtists);
+				Command artistCommand = new ArtistCommand(eventBus, strArtists,APP_LOGGER);
 				artistCommand.run();
 			}
 			if (commandLine.hasOption(TEST.getLongOpt()))
 			{
-				Command command = new RunCommand(eventBus, RunMode.TEST);
+				Command command = new RunCommand(eventBus, RunMode.TEST,APP_LOGGER);
 				command.run();
 			}
 			if (commandLine.hasOption(LEARN.getLongOpt()))
 			{
-				Command command = new RunCommand(eventBus, RunMode.LEARN);
+				Command command = new RunCommand(eventBus, RunMode.LEARN,APP_LOGGER);
 				command.run();
 			}
 			if (commandLine.hasOption(LIST.getLongOpt()))
@@ -119,7 +119,7 @@ public class ReleaseNotifier
 			}
 			if (args.length == 0 || commandLine.hasOption(RUN.getLongOpt()))
 			{
-				Command command = new RunCommand(eventBus, RunMode.NORMAL);
+				Command command = new RunCommand(eventBus, RunMode.NORMAL,APP_LOGGER);
 				command.run();
 			}
 

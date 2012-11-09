@@ -8,8 +8,11 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
@@ -31,6 +34,7 @@ public class RunCommand implements Command
 
 	private final EventBus m_eventBus;
 	private final RunMode m_runMode;
+	private Logger logger;
 
 	public enum RunMode
 	{
@@ -40,10 +44,12 @@ public class RunCommand implements Command
 		LIST;
 	}
 
-	public RunCommand(EventBus eventBus, RunMode runMode)
+	public RunCommand(EventBus eventBus, RunMode runMode,Logger logger)
 	{
 		m_eventBus = eventBus;
 		m_runMode = runMode;
+		this.logger = logger;
+		
 	}
 
 	public void run() throws CommandException
@@ -130,8 +136,16 @@ public class RunCommand implements Command
 			@Nullable
 			public Artist apply(@Nullable Artists artist)
 			{
-				// TODO wrap around a try catch
-				return new Artist(artist.getUri(), artist.getName()).fetch();
+				Artist fetch;
+				try
+				{
+					fetch = new Artist(artist.getUri(), artist.getName()).fetch();
+				} catch (Exception e)
+				{
+					logger.error("Fail to fetch artist "+artist.getName());
+					fetch = null;
+				}
+				return fetch;
 			}
 		};
 
@@ -141,12 +155,11 @@ public class RunCommand implements Command
 			@Nullable
 			public Iterable<Album> apply(@Nullable Artist artist)
 			{
-				// TODO wrap around a try catch
 				return artist.getAlbums();
 			}
 		};
 
-		return FluentIterable.from(artists).transform(fetchArtist).transformAndConcat(getAlbums);
+		return FluentIterable.from(artists).transform(fetchArtist).filter(Predicates.notNull()).transformAndConcat(getAlbums);
 
 	}
 

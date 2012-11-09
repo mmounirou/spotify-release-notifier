@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -47,17 +48,19 @@ public class ArtistCommand implements Command
 
 	private Iterable<String> m_strArtists;
 	private EventBus m_eventBus;
+	private Logger logger;
 
-	public ArtistCommand(EventBus eventBus, Iterable<String> strArtists)
+	public ArtistCommand(EventBus eventBus, Iterable<String> strArtists, Logger logger)
 	{
 		m_eventBus = eventBus;
 		m_strArtists = strArtists;
+		this.logger = logger;
 	}
 
 	public void run() throws CommandException
 	{
 		m_eventBus.post(ArtistCommandStartEvent.of(this));
-		
+
 		Function<Artist, Artists> toDbArtists = new Function<Artist, Artists>()
 		{
 			@Nullable
@@ -79,7 +82,7 @@ public class ArtistCommand implements Command
 				return input.getHref();
 			}
 		};
-		
+
 		Function<Artists, String> toUri = new Function<Artists, String>()
 		{
 
@@ -97,9 +100,10 @@ public class ArtistCommand implements Command
 			connection = DBUtils.connectToDb();
 			Map<String, Artist> spotifyArtistByHref = Maps.uniqueIndex(fetchSpotifyArtists(m_strArtists), toHref);
 
-			final Collection<Artists> addedArtist = new ArtistDao(connection).addArtistIfNotExist(FluentIterable.from(spotifyArtistByHref.values()).transform(toDbArtists).toImmutableList());
+			final Collection<Artists> addedArtist = new ArtistDao(connection).addArtistIfNotExist(FluentIterable.from(spotifyArtistByHref.values()).transform(toDbArtists)
+					.toImmutableList());
 			final ImmutableList<String> addedArtistUri = FluentIterable.from(addedArtist).transform(toUri).toImmutableList();
-			
+
 			Predicate<Artist> newAddedArtistPredicate = new Predicate<Artist>()
 			{
 
@@ -110,12 +114,10 @@ public class ArtistCommand implements Command
 			};
 
 			fireNewArtists(Maps.filterValues(spotifyArtistByHref, newAddedArtistPredicate).values());
-		}
-		catch ( SQLException e )
+		} catch (SQLException e)
 		{
 			throw new CommandException(e);
-		}
-		finally
+		} finally
 		{
 			ConnectionUtils.closeQuietly(connection);
 			m_eventBus.post(ArtistCommandEndEvent.of(this));
@@ -125,7 +127,7 @@ public class ArtistCommand implements Command
 
 	private void fireNewArtists(Collection<Artist> addedArtist)
 	{
-		for ( Artist artists : addedArtist )
+		for (Artist artists : addedArtist)
 		{
 			m_eventBus.post(NewArtistEvent.of(artists, RunMode.NORMAL));
 		}
@@ -139,7 +141,16 @@ public class ArtistCommand implements Command
 			@Nullable
 			public Iterable<Artist> apply(@Nullable String strArtist)
 			{
-				return FluentIterable.from(Search.searchArtist(strArtist)).filter(new PrefectMatch(strArtist));
+				ImmutableList<Artist> searchArtist;
+				try
+				{
+					searchArtist = Search.searchArtist(strArtist);
+				} catch (Exception e)
+				{
+					logger.error("Fail to fetch artist" + strArtist, e);
+					searchArtist = ImmutableList.of();
+				}
+				return FluentIterable.from(searchArtist).filter(new PrefectMatch(strArtist));
 			}
 		};
 
