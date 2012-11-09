@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mmounirou.spotify</groupId>
 	<artifactId>spotify-release-notifier</artifactId>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 
 	<name>spotify-release-notifier</name>
 	<url>https://github.com/mmounirou/spotify-release-notifier</url>
