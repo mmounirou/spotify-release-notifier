@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mmounirou.spotify</groupId>
 	<artifactId>spotify-release-notifier</artifactId>
@@ -6,7 +7,6 @@
 
 	<name>spotify-release-notifier</name>
 	<url>https://github.com/mmounirou/spotify-release-notifier</url>
-
 
 	<distributionManagement>
 		<repository>
@@ -24,8 +24,10 @@
 	</ciManagement>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<executable.mainClass>com.mmounirou.spotify.ReleaseNotifier</executable.mainClass>
 		<spotify-web-api.version>1.1</spotify-web-api.version>
+		<lastfm-web-api.version>1.0-SNAPSHOT</lastfm-web-api.version>
 	</properties>
 	<repositories>
 		<repository>
@@ -92,6 +94,12 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.github.mvollebregt.lastfm4j</groupId>
+			<artifactId>lastfm4j</artifactId>
+			<version>${lastfm-web-api.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.mmounirou.spotify</groupId>
 			<artifactId>spotify-web-4j</artifactId>
@@ -104,6 +112,15 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
 				<executions>
@@ -112,8 +129,11 @@
 						<phase>prepare-package</phase>
 						<configuration>
 							<target>
-								<echo message="java -jar %~dp0\${project.build.finalName}-dist.jar %*" file="${project.build.directory}/dist/${project.build.finalName}.bat" />
-								<echo message="java -jar $(dirname $(readlink -f $0))/${project.build.finalName}-dist.jar $@" file="${project.build.directory}/dist/${project.build.finalName}.sh" />
+								<echo message="java -jar %~dp0\${project.build.finalName}-dist.jar %*"
+									file="${project.build.directory}/dist/${project.build.finalName}.bat" />
+								<echo
+									message="java -jar $(dirname $(readlink -f $0))/${project.build.finalName}-dist.jar $@"
+									file="${project.build.directory}/dist/${project.build.finalName}.sh" />
 							</target>
 						</configuration>
 						<goals>

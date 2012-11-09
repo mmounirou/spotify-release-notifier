@@ -10,9 +10,12 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import com.github.mvollebregt.lastfm4j.Period;
 import com.google.common.base.Charsets;
+import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.eventbus.EventBus;
 import com.google.common.io.Files;
@@ -22,6 +25,7 @@ import com.mmounirou.spotify.commands.DropCommand;
 import com.mmounirou.spotify.commands.ListCommand;
 import com.mmounirou.spotify.commands.RunCommand;
 import com.mmounirou.spotify.commands.RunCommand.RunMode;
+import com.mmounirou.spotify.commons.LastFmUtils;
 import com.mmounirou.spotify.dao.DBUtils;
 import com.mmounirou.spotify.listener.EventListener.ApplicationEndEvent;
 import com.mmounirou.spotify.listener.EventListener.ApplicationStartEvent;
@@ -42,6 +46,7 @@ public class ReleaseNotifier
 //	private static final Option CRON        = OptionBuilder.withLongOpt("cron").withDescription("Disables stdout and stderr output, log file used.Reduces logging level slightly.").create();
 	private static final Option ARTIST      = OptionBuilder.withLongOpt("artists").withDescription("Insert new artists separated by comma").hasArg().withType(String.class).create();
 	private static final Option ARTIST_FILE = OptionBuilder.withLongOpt("artists-file").withDescription("Insert new artists contained in input file.one artist by line").hasArg().withType(File.class).create();
+	private static final Option LAST_FM     = OptionBuilder.withLongOpt("lastfm").withDescription(String.format("Insert new artists from user lastfm top artists . period value must be in %s",Joiner.on(" , ").join(Period.values()))).hasArgs(2).withArgName("username[:period]").withValueSeparator(':').create();
 	private static final Option RUN         = OptionBuilder.withLongOpt("run").withDescription("Start normal execution").create();
 	private static final Option HELP        = OptionBuilder.withLongOpt("help").withDescription("print usage information").create();
 
@@ -56,6 +61,7 @@ public class ReleaseNotifier
 							.addOption(LIST)
 							.addOption(ARTIST)
 							.addOption(ARTIST_FILE)
+							.addOption(LAST_FM)
 							.addOption(TEST)
 							.addOption(LEARN)
 							.addOption(RUN)
@@ -98,6 +104,17 @@ public class ReleaseNotifier
 				Command artistCommand = new ArtistCommand(eventBus, strArtists,APP_LOGGER);
 				artistCommand.run();
 			}
+			if (commandLine.hasOption(LAST_FM.getLongOpt()))
+			{
+				String[] optionValues = commandLine.getOptionValues(LAST_FM.getLongOpt());
+				String username = optionValues[0];
+				Period period = parsePeriod(optionValues);
+			
+				Command artistCommand = new ArtistCommand(eventBus, LastFmUtils.getArtists(username, period),APP_LOGGER);
+				artistCommand.run();
+
+			}
+
 			if (commandLine.hasOption(TEST.getLongOpt()))
 			{
 				Command command = new RunCommand(eventBus, RunMode.TEST,APP_LOGGER);
@@ -134,6 +151,18 @@ public class ReleaseNotifier
 		{
 			eventBus.post(ApplicationEndEvent.of());
 		}
+	}
+
+	private static Period parsePeriod(String[] optionValues) throws ParseException
+	{
+		String strPeriod = (optionValues.length > 1) ? optionValues[1]:null;
+		Period period = StringUtils.isBlank(strPeriod) ? Period.OVERALL : Period.getByName(optionValues[1]);
+		
+		if(period == null)
+		{
+			throw new ParseException(String.format("the period <%s> is not supported . supported one are %s", strPeriod,Joiner.on(" , ").join(Period.values())));
+		}
+		return period;
 	}
 
 	private static void initListeners(EventBus eventBus)
